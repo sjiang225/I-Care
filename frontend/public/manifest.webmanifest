@@ -1,0 +1,19 @@
+{
+  "name": "I-Care — Dementia Caregiver Companion",
+  "short_name": "I-Care",
+  "description": "An AI companion offering evidence-based education and emotional support for dementia caregivers.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0d9488",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -1,0 +1,193 @@
+{
+  "_comment": "Care2Caregivers educational guides (Rutgers Health / COPSA). Source: https://care2caregivers.com/help-for-caregivers/educational-guides-and-brochures/  -- Used as the I-Care RAG knowledge base. v1 ingests English ('url_en'); Spanish ('url_es') reserved for future multilingual support.",
+  "categories": [
+    "activities",
+    "understanding_dementia",
+    "communication",
+    "challenging_behaviors",
+    "incontinence",
+    "nutrition",
+    "sleep",
+    "recognition",
+    "care_options",
+    "caregiver_selfcare",
+    "about"
+  ],
+  "documents": [
+    {
+      "id": "activities",
+      "title": "Activities: Strategies for Keeping Your Loved One Engaged",
+      "category": "activities",
+      "url_en": "https://care2caregivers.com/wp-content/uploads/2020/01/RH-Activities.pdf",
+      "url_es": "https://care2caregivers.com/wp-content/uploads/2020/10/Activities-Spanish.pdf"
+    },
+    {
+      "id": "after-ltc-move",
+      "title": "After Your Loved One Moves to a Long-Term Care Facility … What Now?",
+      "category": "care_options",
+      "url_en": "https://care2caregivers.com/wp-content/uploads/2020/01/RH-Caregiving-Placement.pdf",
+      "url_es": "https://care2caregivers.com/wp-content/uploads/2020/10/Caregiving-Placement-Spanish.pdf"
+    },
+    {
+      "id": "brain-health",
+      "title": "Brain Health",
+      "category": "understanding_dementia",
+      "url_en": "https://care2caregivers.com/wp-content/uploads/2023/10/BrainHealth_WEB.pdf",
+      "url_es": "https://care2caregivers.com/wp-content/uploads/2025/08/BrainHealth_es_WEB.pdf"
+    },
+    {
+      "id": "calming-anxious",
+      "title": "Calming an Anxious Person: Rx for Caregivers",
+      "category": "challenging_behaviors",
+      "url_en": "https://care2caregivers.com/wp-content/uploads/2022/06/CalmingTips_Brochure_WEB.pdf",
+      "url_es": "https://care2caregivers.com/wp-content/uploads/2023/12/CalmingTips_Brochure_WEB_ESUS.pdf"
+    },
+    {
+      "id": "communication",
+      "title": "Communication: Breaking Through the Barriers",
+      "category": "communication",
+      "url_en": "https://care2caregivers.com/wp-content/uploads/2020/01/RH-Communication.pdf",
+      "url_es": "https://care2caregivers.com/wp-content/uploads/2020/10/Communcation-Spanish.pdf"
+    },
+    {
+      "id": "challenging-behaviors",
+      "title": "Dealing with Challenging Behaviors",
+      "category": "challenging_behaviors",
+      "url_en": "https://care2caregivers.com/wp-content/uploads/2020/01/RH-Challenging-Behaviors.pdf",
+      "url_es": "https://care2caregivers.com/wp-content/uploads/2020/10/Challenging-Behaviors-Spanish.pdf"
+    },
+    {
+      "id": "emergency-planning",
+      "title": "Emergency Care Planning: Are You Prepared for All the What Ifs?",
+      "category": "care_options",
+      "url_en": "https://care2caregivers.com/wp-content/uploads/2020/04/RH-Emergency-Planning.pdf",
+      "url_es": "https://care2caregivers.com/wp-content/uploads/2020/10/Emergency-Care-Planning-Spanish.pdf"
+    },
+    {
+      "id": "family-caregivers",
+      "title": "Family Caregivers: Special Considerations",
+      "category": "caregiver_selfcare",
+      "url_en": "https://care2caregivers.com/wp-content/uploads/2020/10/Family-Caregivers.pdf",
+      "url_es": "https://care2caregivers.com/wp-content/uploads/2023/12/FamilyCaregivers_WEB_ESUS.pdf"
+    },
+    {
+      "id": "healthy-aging",
+      "title": "Healthy Aging",
+      "category": "understanding_dementia",
+      "url_en": "https://care2caregivers.com/wp-content/uploads/2023/10/HealthyAging_WEB.pdf",
+      "url_es": "https://care2caregivers.com/wp-content/uploads/2025/08/HealthyAging_WEBvrsn.pdf"
+    },
+    {
+      "id": "incontinence",
+      "title": "Incontinence and Memory Loss",
+      "category": "incontinence",
+      "url_en": "https://care2caregivers.com/wp-content/uploads/2022/06/Incontinence_ForWebUse.pdf",
+      "url_es": "https://care2caregivers.com/wp-content/uploads/2025/08/Incontinence_WEBvrsn.pdf"
+    },
+    {
+      "id": "newly-diagnosed",
+      "title": "Newly Diagnosed … What Now?",
+      "category": "understanding_dementia",
+      "url_en": "https://care2caregivers.com/wp-content/uploads/2022/01/Newly-Diagnosed.pdf",
+      "url_es": "https://care2caregivers.com/wp-content/uploads/2025/08/NewlyDiagnosed_WEBvrsn.pdf"
+    },
+    {
+      "id": "nutrition",
+      "title": "Nutrition and Memory Loss",
+      "category": "nutrition",
+      "url_en": "https://care2caregivers.com/wp-content/uploads/2022/06/Nutrition-MemoryLoss_WEB.pdf",
+      "url_es": "https://care2caregivers.com/wp-content/uploads/2023/12/Nutrition-MemoryLoss_WEB_ESUS.pdf"
+    },
+    {
+      "id": "self-care",
+      "title": "Self-Care for the Caregiver: Taking Care of Yourself is Important Too",
+      "category": "caregiver_selfcare",
+      "url_en": "https://care2caregivers.com/wp-content/uploads/2020/01/RH-Self-Care.pdf",
+      "url_es": "https://care2caregivers.com/wp-content/uploads/2020/10/SelfCare-Spanish.pdf"
+    },
+    {
+      "id": "shadowing",
+      "title": "Shadowing",
+      "category": "challenging_behaviors",
+      "url_en": "https://care2caregivers.com/wp-content/uploads/2023/10/Shadowing_Web.pdf",
+      "url_es": "https://care2caregivers.com/wp-content/uploads/2025/08/Shadowing_WEBvrsn.pdf"
+    },
+    {
+      "id": "signs-need-assistance",
+      "title": "Signs That Your Family Member May Need Assistance",
+      "category": "care_options",
+      "url_en": "https://care2caregivers.com/wp-content/uploads/2020/01/RH-Signs-Assistsance.pdf",
+      "url_es": "https://care2caregivers.com/wp-content/uploads/2020/10/Signs-of-Assistnce-Spanish.pdf"
+    },
+    {
+      "id": "sleep",
+      "title": "Sleep and Memory Loss: Tips to Help You and Your Loved One Get a Good Night's Sleep",
+      "category": "sleep",
+      "url_en": "https://care2caregivers.com/wp-content/uploads/2020/01/RH-Sleep-Memory-LOss.pdf",
+      "url_es": "https://care2caregivers.com/wp-content/uploads/2020/10/Sleep-and-Memory-Loss-Spanish.pdf"
+    },
+    {
+      "id": "types-of-care",
+      "title": "Types of Care: What Type of Care Do I Need?",
+      "category": "care_options",
+      "url_en": "https://care2caregivers.com/wp-content/uploads/2020/01/RH-Types-of-Care.pdf",
+      "url_es": "https://care2caregivers.com/wp-content/uploads/2020/10/TypesOfCare-Spanish.pdf"
+    },
+    {
+      "id": "types-of-dementia",
+      "title": "Types of Dementia",
+      "category": "understanding_dementia",
+      "url_en": "https://care2caregivers.com/wp-content/uploads/2020/01/RH-Types-of-Dementia.pdf",
+      "url_es": "https://care2caregivers.com/wp-content/uploads/2020/10/TypesOfDementia-Spanish.pdf"
+    },
+    {
+      "id": "grief-loss",
+      "title": "Understanding Caregiver Grief and Loss",
+      "category": "caregiver_selfcare",
+      "url_en": "https://care2caregivers.com/wp-content/uploads/2021/03/Understanding-Caregiver-Grief-Loss.pdf",
+      "url_es": "https://care2caregivers.com/wp-content/uploads/2023/12/UnderstandingCrgvrGrief_WEB_ESUS.pdf"
+    },
+    {
+      "id": "what-type-of-doctor",
+      "title": "What Type of Doctor Do I Need?",
+      "category": "care_options",
+      "url_en": "https://care2caregivers.com/wp-content/uploads/2020/08/What-Type-of-Doctor-Do-I-Need-1.pdf",
+      "url_es": "https://care2caregivers.com/wp-content/uploads/2023/12/What-Type-of-Doctor_WEB_ESUS.pdf"
+    },
+    {
+      "id": "doesnt-recognize",
+      "title": "When Your Loved One Doesn't Recognize You",
+      "category": "recognition",
+      "url_en": "https://care2caregivers.com/wp-content/uploads/2023/10/DoesntRecognize_Web.pdf",
+      "url_es": "https://care2caregivers.com/wp-content/uploads/2025/08/DoesntRecoognize_WEBvrsn.pdf"
+    },
+    {
+      "id": "c2c-brochure",
+      "title": "Care2Caregivers Brochure",
+      "category": "about",
+      "url_en": "https://care2caregivers.com/wp-content/uploads/2020/01/Care2Caregivers-Brochure.pdf",
+      "url_es": "https://care2caregivers.com/wp-content/uploads/2025/01/C2CBroch_Spanish_FNL.pdf"
+    },
+    {
+      "id": "copsa-brochure",
+      "title": "COPSA Institute Brochure",
+      "category": "about",
+      "url_en": "https://care2caregivers.com/wp-content/uploads/2020/01/COPSA-Memory-Disorders-Clinic-Brochure.pdf",
+      "url_es": null
+    },
+    {
+      "id": "support-every-step",
+      "title": "Support for Every Step: Occupational, Speech and Physical Therapy for Memory Loss",
+      "category": "care_options",
+      "url_en": "https://care2caregivers.com/wp-content/uploads/2025/04/Supporting_Every_Step_forWeb.pdf",
+      "url_es": "https://care2caregivers.com/wp-content/uploads/2025/08/Supporting_Every_Step_WEBvrsn.pdf"
+    },
+    {
+      "id": "long-term-care-guidance",
+      "title": "Long Term Care Guidance for Caregivers",
+      "category": "care_options",
+      "url_en": "https://care2caregivers.com/wp-content/uploads/2025/08/Long-TermCare_Guidance4Crgvrs_WEB.pdf",
+      "url_es": null
+    }
+  ]
+}
