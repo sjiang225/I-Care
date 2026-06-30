@@ -5,10 +5,22 @@ export interface ChatMessage {
   content: string;
 }
 
-// Streams assistant text deltas via onDelta; resolves when the stream ends.
+export interface Source {
+  n: number;
+  title: string;
+  category: string;
+  url: string | null;
+}
+
+export interface StreamHandlers {
+  onDelta: (text: string) => void;
+  onSources?: (sources: Source[]) => void;
+}
+
+// Streams assistant text deltas + sources; resolves when the stream ends.
 export async function streamChat(
   messages: ChatMessage[],
-  onDelta: (text: string) => void,
+  handlers: StreamHandlers,
   signal?: AbortSignal
 ): Promise<void> {
   const res = await fetch("/api/chat", {
@@ -44,7 +56,8 @@ export async function streamChat(
       }
       if (!data) continue;
       const parsed = JSON.parse(data);
-      if (event === "delta") onDelta(parsed.text ?? "");
+      if (event === "delta") handlers.onDelta(parsed.text ?? "");
+      else if (event === "sources") handlers.onSources?.(parsed.sources ?? []);
       else if (event === "error") throw new Error(parsed.message ?? "stream error");
     }
   }
