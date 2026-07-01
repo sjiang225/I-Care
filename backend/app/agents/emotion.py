@@ -1,10 +1,12 @@
 """Emotion-Support Agent: empathetic dialogue + stress monitoring.
 
-Flow:
-  1. Retrieve self-care / coping material for grounded, practical suggestions.
-  2. Assess + log the caregiver's well-being via the log_wellbeing TOOL CALL
-     (this is the proposal's "track stress over time" feature).
-  3. Stream a warm, validating response with light, citable coping guidance.
+Role: AFFECTIVE support (warmth), not factual delivery. To keep composition with
+the Education agent clean, this agent:
+  * does NOT emit `sources` and does NOT use [n] citations;
+  * MAY use self-care material silently to make suggestions concrete;
+  * assesses + logs the caregiver's well-being via the log_wellbeing TOOL CALL.
+
+(Education is the sole source/citation emitter -- see docs/agent-orchestration.md.)
 """
 from __future__ import annotations
 
@@ -17,7 +19,6 @@ from ..tools import wellbeing as _wb  # noqa: F401  (registers the tool)
 from ..tools.base import registry
 from ..tools.wellbeing import LOG_WELLBEING_SPEC
 from .base import AgentContext, AgentEvent
-from .education import build_context_and_sources
 
 EMOTION_SYSTEM = """You are I-Care, a warm, compassionate companion for dementia \
 caregivers. The caregiver is sharing how they feel.
@@ -25,16 +26,22 @@ caregivers. The caregiver is sharing how they feel.
 Rules:
 - Lead with genuine empathy: validate their feelings and reassure them they are \
 not alone. Caregiver guilt, grief, anger, and exhaustion are normal.
-- Then offer one or two gentle, practical self-care suggestions. If they are \
-drawn from the reference material, cite them inline like [1].
+- Then offer one or two gentle, practical self-care suggestions. You may draw on \
+the background notes below, but weave them in naturally -- do NOT use citation \
+markers like [1].
 - Be brief, warm, and human. Plain language, short paragraphs.
 - Gently mention that support is available: Care2Caregivers helpline \
 1-800-424-2494.
 - You are not a therapist. If they mention thoughts of self-harm or crisis, \
 urge them to call or text 988 immediately.
 
-Reference material (self-care):
+Background notes (self-care, for your reference only):
 {context}"""
+
+
+def _plain_context(hits) -> str:
+    """Concatenate retrieved text WITHOUT citation numbers (silent grounding)."""
+    return "\n\n".join(h.text for h in hits)
 
 
 class EmotionSupportAgent:
@@ -69,15 +76,14 @@ class EmotionSupportAgent:
         return None
 
     def stream(self, ctx: AgentContext) -> Iterator[AgentEvent]:
-        hits = retrieve(ctx.last_user_text(), k=3)
-        context, sources = build_context_and_sources(hits)
-        yield ("sources", sources)
-
         logged = self._assess_and_log(ctx)
         if logged:
             yield ("signal", {"wellbeing": logged})
 
-        system = Message(role="system", content=EMOTION_SYSTEM.format(context=context))
+        hits = retrieve(ctx.last_user_text(), k=3)
+        system = Message(
+            role="system", content=EMOTION_SYSTEM.format(context=_plain_context(hits))
+        )
         prompt = [system, *ctx.recent(self._history_turns)]
         for delta in get_llm().stream_chat(prompt, temperature=0.6):
             yield ("delta", delta)

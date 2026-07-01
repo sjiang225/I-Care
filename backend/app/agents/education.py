@@ -82,7 +82,12 @@ class EducationAgent:
         context, sources = build_context_and_sources(hits)
         yield ("sources", sources)
 
-        tone = _EMOTION_TONE if ctx.flags.get("needs_emotion") else ""
+        # Add an empathetic lead-in only if emotional distress is present AND the
+        # Emotion agent has NOT already handled empathy in this turn (composition).
+        needs_empathy = ctx.flags.get("needs_emotion") and not ctx.flags.get(
+            "empathy_done"
+        )
+        tone = _EMOTION_TONE if needs_empathy else ""
         system = Message(
             role="system",
             content=EDUCATION_SYSTEM.format(context=context, tone=tone),

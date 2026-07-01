@@ -1,11 +1,13 @@
-"""Coordinator Agent: safety pre-check, intent routing, and orchestration.
+"""Coordinator Agent: safety pre-check, intent routing, and multi-agent composition.
 
 For each turn:
   1. Safety guardrail -> if it fires, surface an urgent notice first.
-  2. Route the message (education vs emotional support) via a structured tool
-     call.
-  3. Delegate to the chosen specialist agent, passing emotional context so an
-     educational answer can still open with empathy.
+  2. Route the message (needs_education / needs_emotion) via a structured tool call.
+  3. Build an ordered Plan of specialist agents and execute them sequentially,
+     streaming throughout. When both are needed: Emotion (empathy + log) first,
+     then a connector, then Education (grounded answer with citations).
+
+See docs/agent-orchestration.md for the design + rationale.
 """
 from __future__ import annotations
 
@@ -13,9 +15,10 @@ from typing import Iterator
 
 from ..llm.base import Message, ToolSpec
 from ..llm.factory import get_llm
-from .base import Agent, AgentContext, AgentEvent
+from .base import AgentContext, AgentEvent
 from .education import EducationAgent
 from .emotion import EmotionSupportAgent
+from .registry import AgentRegistry
 from .safety import check_safety
 
 ROUTE_SPEC = ToolSpec(
@@ -35,7 +38,7 @@ ROUTE_SPEC = ToolSpec(
             "primary": {
                 "type": "string",
                 "enum": ["education", "emotion"],
-                "description": "Which response should lead.",
+                "description": "Which need is dominant (for emphasis).",
             },
         },
         "required": ["primary", "needs_education", "needs_emotion"],
@@ -43,19 +46,22 @@ ROUTE_SPEC = ToolSpec(
 )
 
 ROUTE_SYSTEM = (
-    "You route messages from dementia caregivers in an support app. "
-    "Decide whether the latest message primarily needs practical/educational "
-    "guidance or emotional support, and whether emotional distress is present. "
-    "Record your decision by calling the route function."
+    "You route messages from dementia caregivers in a support app. "
+    "Decide whether the latest message needs practical/educational guidance, "
+    "emotional support, or both. Record your decision by calling the route function."
 )
+
+# Shown between the Emotion and Education segments when both run.
+CONNECTOR = "\n\nHere are some practical things that may help:\n\n"
 
 
 class Coordinator:
     name = "coordinator"
 
     def __init__(self) -> None:
-        self._education = EducationAgent()
-        self._emotion = EmotionSupportAgent()
+        self._registry = AgentRegistry()
+        self._registry.register(EducationAgent())
+        self._registry.register(EmotionSupportAgent())
 
     def _route(self, ctx: AgentContext) -> dict:
         try:
@@ -72,6 +78,16 @@ class Coordinator:
         # Safe default: treat as an educational question.
         return {"primary": "education", "needs_education": True, "needs_emotion": False}
 
+    def _build_plan(self, route: dict) -> list[str]:
+        """Ordered list of agent names. Empathy precedes facts; education is the
+        fallback so every turn produces an answer."""
+        steps: list[str] = []
+        if route.get("needs_emotion"):
+            steps.append("emotion")
+        if route.get("needs_education") or not steps:
+            steps.append("education")
+        return steps
+
     def stream(self, ctx: AgentContext) -> Iterator[AgentEvent]:
         safety = check_safety(ctx.last_user_text())
         if safety.triggered:
@@ -79,9 +95,13 @@ class Coordinator:
             yield ("delta", safety.message or "")
 
         route = self._route(ctx)
-        ctx.flags["needs_emotion"] = bool(route.get("needs_emotion"))
+        plan = self._build_plan(route)
+        yield ("signal", {"plan": plan})
 
-        agent: Agent = (
-            self._emotion if route.get("primary") == "emotion" else self._education
-        )
-        yield from agent.stream(ctx)
+        for i, name in enumerate(plan):
+            if i > 0:
+                yield ("delta", CONNECTOR)
+            # Tell later agents whether empathy was already delivered this turn.
+            ctx.flags["empathy_done"] = "emotion" in plan[:i]
+            ctx.flags["needs_emotion"] = bool(route.get("needs_emotion"))
+            yield from self._registry.get(name).stream(ctx)
