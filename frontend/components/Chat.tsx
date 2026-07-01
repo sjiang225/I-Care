@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { streamChat, type ChatMessage, type Source } from "@/lib/api";
+import WellbeingView from "@/components/WellbeingView";
 import {
   speechSupported,
   ttsSupported,
@@ -15,7 +16,7 @@ const GREETING =
   "Hi, I'm I-Care. I'm here to support you as a dementia caregiver. " +
   "Ask me anything — about behaviors, daily care, or how you're feeling.";
 
-type UiMessage = ChatMessage & { sources?: Source[] };
+type UiMessage = ChatMessage & { sources?: Source[]; wellbeingLogged?: boolean };
 
 export default function Chat() {
   const [messages, setMessages] = useState<UiMessage[]>([]);
@@ -23,6 +24,7 @@ export default function Chat() {
   const [sending, setSending] = useState(false);
   const [listening, setListening] = useState(false);
   const [readAloud, setReadAloud] = useState(false);
+  const [view, setView] = useState<"chat" | "wellbeing">("chat");
 
   const dictationRef = useRef<Dictation | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -61,6 +63,7 @@ export default function Chat() {
     try {
       let full = "";
       let sources: Source[] | undefined;
+      let wellbeingLogged = false;
       await streamChat(
         next.map((m) => ({ role: m.role, content: m.content })),
         {
@@ -68,12 +71,20 @@ export default function Chat() {
             full += delta;
             setMessages((m) => {
               const copy = [...m];
-              copy[copy.length - 1] = { role: "assistant", content: full, sources };
+              copy[copy.length - 1] = {
+                role: "assistant",
+                content: full,
+                sources,
+                wellbeingLogged,
+              };
               return copy;
             });
           },
           onSources: (s) => {
             sources = s;
+          },
+          onSignal: (sig) => {
+            if (sig && "wellbeing" in sig) wellbeingLogged = true;
           },
         },
         sessionIdRef.current
@@ -122,6 +133,15 @@ export default function Chat() {
     setReadAloud((v) => !v);
   }
 
+  if (view === "wellbeing") {
+    return (
+      <WellbeingView
+        sessionId={sessionIdRef.current}
+        onBack={() => setView("chat")}
+      />
+    );
+  }
+
   return (
     <div className="app">
       <header className="header">
@@ -130,10 +150,19 @@ export default function Chat() {
           <h1>I-Care</h1>
           <div className="tag">Dementia Caregiver Companion</div>
         </div>
+        <button
+          className="icon-btn"
+          style={{ marginLeft: "auto" }}
+          onClick={() => setView("wellbeing")}
+          aria-label="View your well-being trend"
+          title="Your well-being"
+        >
+          📈
+        </button>
         {canSpeechOut && (
           <button
             className={`icon-btn ${readAloud ? "active" : ""}`}
-            style={{ marginLeft: "auto", background: readAloud ? "#fff" : undefined }}
+            style={{ background: readAloud ? "#fff" : undefined }}
             onClick={toggleReadAloud}
             aria-label="Read answers aloud"
             title="Read answers aloud"
@@ -150,6 +179,15 @@ export default function Chat() {
             <div className={`bubble ${m.role}`}>
               {m.content || (sending && i === messages.length - 1 ? "…" : "")}
             </div>
+            {m.role === "assistant" && m.wellbeingLogged && (
+              <button
+                className="wb-noted"
+                onClick={() => setView("wellbeing")}
+                title="View your well-being trend"
+              >
+                💚 Noted how you&apos;re feeling — view trend
+              </button>
+            )}
             {m.role === "assistant" && m.sources && m.sources.length > 0 && (
               <div className="sources">
                 <span className="sources-label">Sources</span>

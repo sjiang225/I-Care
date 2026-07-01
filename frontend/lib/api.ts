@@ -15,6 +15,34 @@ export interface Source {
 export interface StreamHandlers {
   onDelta: (text: string) => void;
   onSources?: (sources: Source[]) => void;
+  onSignal?: (signal: Record<string, unknown>) => void;
+}
+
+export interface WellbeingPoint {
+  ts: number;
+  stress_level: number;
+  emotions: string[];
+  note: string;
+}
+
+export interface WellbeingData {
+  session_id: string;
+  points: WellbeingPoint[];
+  summary: {
+    count: number;
+    avg_stress: number;
+    latest_stress: number | null;
+    trend: "up" | "down" | "steady";
+    top_emotions: [string, number][];
+  };
+}
+
+export async function getWellbeing(sessionId: string): Promise<WellbeingData> {
+  const res = await fetch(
+    `/api/wellbeing?session_id=${encodeURIComponent(sessionId)}`
+  );
+  if (!res.ok) throw new Error(`Wellbeing request failed: ${res.status}`);
+  return res.json();
 }
 
 // Streams assistant text deltas + sources; resolves when the stream ends.
@@ -59,6 +87,7 @@ export async function streamChat(
       const parsed = JSON.parse(data);
       if (event === "delta") handlers.onDelta(parsed.text ?? "");
       else if (event === "sources") handlers.onSources?.(parsed.sources ?? []);
+      else if (event === "signal") handlers.onSignal?.(parsed);
       else if (event === "error") throw new Error(parsed.message ?? "stream error");
     }
   }

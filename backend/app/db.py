@@ -8,6 +8,7 @@ from __future__ import annotations
 import json
 import sqlite3
 import time
+from collections import Counter
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -22,6 +23,15 @@ class WellbeingLog:
     stress_level: int  # 1..5
     emotions: list[str]
     note: str
+
+
+@dataclass
+class WellbeingSummary:
+    count: int
+    avg_stress: float
+    latest_stress: int | None
+    trend: str  # "up" | "down" | "steady" (rising stress = "up")
+    top_emotions: list[tuple[str, int]]
 
 
 class Database:
@@ -74,6 +84,7 @@ class Database:
         return log
 
     def wellbeing_trend(self, session_id: str, limit: int = 30) -> list[WellbeingLog]:
+        """Return logs newest-first (most recent `limit` entries)."""
         rows = self._conn.execute(
             "SELECT session_id, ts, stress_level, emotions, note FROM wellbeing_logs"
             " WHERE session_id = ? ORDER BY ts DESC LIMIT ?",
@@ -89,6 +100,32 @@ class Database:
             )
             for r in rows
         ]
+
+    def wellbeing_summary(
+        self, session_id: str, limit: int = 30
+    ) -> WellbeingSummary:
+        """Aggregate the recent trend: count, average, latest, direction, emotions."""
+        asc = list(reversed(self.wellbeing_trend(session_id, limit)))  # oldest->newest
+        if not asc:
+            return WellbeingSummary(0, 0.0, None, "steady", [])
+
+        stresses = [l.stress_level for l in asc]
+        count = len(stresses)
+        avg = round(sum(stresses) / count, 2)
+        latest = stresses[-1]
+
+        # Trend: compare the later half's mean stress against the earlier half's.
+        trend = "steady"
+        if count >= 4:
+            half = count // 2
+            earlier = stresses[:half]
+            later = stresses[half:]
+            diff = (sum(later) / len(later)) - (sum(earlier) / len(earlier))
+            trend = "up" if diff > 0.5 else "down" if diff < -0.5 else "steady"
+
+        counter = Counter(e for l in asc for e in l.emotions)
+        top = counter.most_common(5)
+        return WellbeingSummary(count, avg, latest, trend, top)
 
 
 @lru_cache
