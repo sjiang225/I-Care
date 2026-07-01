@@ -1,0 +1,534 @@
+{
+  "source": "https://www.carenewjersey.org/list02_new_jersey_Alzheimers_facilities.htm",
+  "fetched": "2026-07-01",
+  "note": "Source provides no contact info; its care-type label is unreliable and dropped. Noise entries removed (see removed_log).",
+  "removed_log": [
+    {
+      "name": "Airmark Facility Services",
+      "city": "Atlantic City",
+      "county": "Atlantic"
+    },
+    {
+      "name": "Apex Facilities Srvs Corp",
+      "city": "Barnegat",
+      "county": "Ocean"
+    },
+    {
+      "name": "Business Facilities Magazine",
+      "city": "Eatontown",
+      "county": "Monmouth"
+    },
+    {
+      "name": "Crs Facility Service",
+      "city": "Elizabeth",
+      "county": "Union"
+    },
+    {
+      "name": "Crs Facility Service",
+      "city": "Elmwood Park",
+      "county": "Bergen"
+    },
+    {
+      "name": "Ccg Facilities Integartion",
+      "city": "Jersey City",
+      "county": "Hudson"
+    },
+    {
+      "name": "Crs Facility Service",
+      "city": "Jersey City",
+      "county": "Hudson"
+    },
+    {
+      "name": "Airmark Facility Services",
+      "city": "Pleasantville",
+      "county": "Atlantic"
+    },
+    {
+      "name": "Mainland Jrnl Pleasantville Area Mainland Manor C",
+      "city": "Pleasantville",
+      "county": "Atlantic"
+    },
+    {
+      "name": "Ambrose Facilities Mangement Incorporated",
+      "city": "Westville",
+      "county": "Gloucester"
+    }
+  ],
+  "facilities": [
+    {
+      "name": "Absecon Manor Nursing Home",
+      "city": "Absecon",
+      "county": "Atlantic"
+    },
+    {
+      "name": "Allendale Community for Mature Living The Atrium",
+      "city": "Allendale",
+      "county": "Bergen"
+    },
+    {
+      "name": "Sunrise Assisted & Independent Living of Cresskill",
+      "city": "Cresskill",
+      "county": "Bergen"
+    },
+    {
+      "name": "Emeritus at Emerson",
+      "city": "Emerson",
+      "county": "Bergen"
+    },
+    {
+      "name": "CareOne at Pine Rest",
+      "city": "Paramus",
+      "county": "Bergen"
+    },
+    {
+      "name": "Emeritus at Paramus",
+      "city": "Paramus",
+      "county": "Bergen"
+    },
+    {
+      "name": "CareOne at Teaneck",
+      "city": "Teaneck",
+      "county": "Bergen"
+    },
+    {
+      "name": "CareOne at Valley",
+      "city": "Westwood",
+      "county": "Bergen"
+    },
+    {
+      "name": "Masonic Home of New Jersey",
+      "city": "Burlington",
+      "county": "Burlington"
+    },
+    {
+      "name": "Alzheimers Association Delaware Valley Chapter",
+      "city": "Marlton",
+      "county": "Burlington"
+    },
+    {
+      "name": "Medford Leas CCRC",
+      "city": "Medford",
+      "county": "Burlington"
+    },
+    {
+      "name": "Lutheran Home At Moorestown",
+      "city": "Moorestown",
+      "county": "Burlington"
+    },
+    {
+      "name": "Arden Courts Alzheimers Assisted Living",
+      "city": "Cherry Hill",
+      "county": "Camden"
+    },
+    {
+      "name": "Brithton Gardens of Cherry Hill",
+      "city": "Cherry Hill",
+      "county": "Camden"
+    },
+    {
+      "name": "Bentley Senior Living At Pennsauken",
+      "city": "Pennsauken",
+      "county": "Camden"
+    },
+    {
+      "name": "Laurel Lake Estates",
+      "city": "Voorhees",
+      "county": "Camden"
+    },
+    {
+      "name": "Lions Gate",
+      "city": "Voorhees",
+      "county": "Camden"
+    },
+    {
+      "name": "Voorhees Center",
+      "city": "Voorhees",
+      "county": "Camden"
+    },
+    {
+      "name": "Victoria Commons Retirement",
+      "city": "Cape May",
+      "county": "Cape May"
+    },
+    {
+      "name": "Crest Haven Nursing & Rehabilitation Center",
+      "city": "Cape May Court House",
+      "county": "Cape May"
+    },
+    {
+      "name": "Loyalton of Cape May",
+      "city": "Cape May Courthouse",
+      "county": "Cape May"
+    },
+    {
+      "name": "The Shores at Wesley Manor",
+      "city": "Ocean City",
+      "county": "Cape May"
+    },
+    {
+      "name": "Alzheimers Daycare Center",
+      "city": "Vineland",
+      "county": "Cumberland"
+    },
+    {
+      "name": "CareOne at Livingston Assisted Living",
+      "city": "Livingston",
+      "county": "Essex"
+    },
+    {
+      "name": "Inglemoor Rehabilitation and Care Center",
+      "city": "Livingston",
+      "county": "Essex"
+    },
+    {
+      "name": "Winchester Gardens",
+      "city": "Maplewood",
+      "county": "Essex"
+    },
+    {
+      "name": "Horizon Manor",
+      "city": "Montclair",
+      "county": "Essex"
+    },
+    {
+      "name": "Arden Courts Manorcare Health Services",
+      "city": "West Orange",
+      "county": "Essex"
+    },
+    {
+      "name": "Brighton Gardens of West Orange",
+      "city": "West Orange",
+      "county": "Essex"
+    },
+    {
+      "name": "Juniper Village at Williamstown",
+      "city": "Williamstown",
+      "county": "Gloucester"
+    },
+    {
+      "name": "Woodbury Mews a Senior Living Community",
+      "city": "Woodbury",
+      "county": "Gloucester"
+    },
+    {
+      "name": "Fritz Reuter Altenheim",
+      "city": "North Bergen",
+      "county": "Hudson"
+    },
+    {
+      "name": "Meadow Lakes",
+      "city": "East Windsor",
+      "county": "Mercer"
+    },
+    {
+      "name": "Acorn Glen",
+      "city": "Princeton",
+      "county": "Mercer"
+    },
+    {
+      "name": "Buckingham Place Assisted Living & The Gallery Medical Adult Day Center",
+      "city": "Princeton",
+      "county": "Mercer"
+    },
+    {
+      "name": "Brookdale Senior Living",
+      "city": "Trenton",
+      "county": "Mercer"
+    },
+    {
+      "name": "Maurice Perilli Adult Day Care",
+      "city": "Trenton",
+      "county": "Mercer"
+    },
+    {
+      "name": "Bear Creek Assisted Living at Bentley Village",
+      "city": "West Windsor",
+      "county": "Mercer"
+    },
+    {
+      "name": "The Chelsea at East Brunswick",
+      "city": "East Brunswick",
+      "county": "Middlesex"
+    },
+    {
+      "name": "Brighton Gardens of Edison",
+      "city": "Edison",
+      "county": "Middlesex"
+    },
+    {
+      "name": "Monroe Village",
+      "city": "Jamesburg",
+      "county": "Middlesex"
+    },
+    {
+      "name": "Brookdale Wynwood At Forsgate",
+      "city": "Monroe Township",
+      "county": "Middlesex"
+    },
+    {
+      "name": "Sunrise Assisted Living of Wall",
+      "city": "Belmar",
+      "county": "Monmouth"
+    },
+    {
+      "name": "Reflections at Colts Neck",
+      "city": "Colts Neck",
+      "county": "Monmouth"
+    },
+    {
+      "name": "Kensington Court Assisted Living & Adult Day Club",
+      "city": "Eatontown",
+      "county": "Monmouth"
+    },
+    {
+      "name": "Sunrise Assisted Living of Lincroft",
+      "city": "Lincroft",
+      "county": "Monmouth"
+    },
+    {
+      "name": "Sunrise Assisted Living of Marlboro",
+      "city": "Marlboro",
+      "county": "Monmouth"
+    },
+    {
+      "name": "Court House Convalescent and Rehab Center",
+      "city": "Middletown",
+      "county": "Monmouth"
+    },
+    {
+      "name": "Navesink House",
+      "city": "Red Bank",
+      "county": "Monmouth"
+    },
+    {
+      "name": "Synergy HomeCare",
+      "city": "Shrewsbury",
+      "county": "Monmouth"
+    },
+    {
+      "name": "Seabrook Village",
+      "city": "Tinton Falls",
+      "county": "Monmouth"
+    },
+    {
+      "name": "CareOne at Wall",
+      "city": "Wall",
+      "county": "Monmouth"
+    },
+    {
+      "name": "Sunrise Assisted Living of Madison",
+      "city": "Madison",
+      "county": "Morris"
+    },
+    {
+      "name": "Country Home",
+      "city": "Morris Plains",
+      "county": "Morris"
+    },
+    {
+      "name": "Sunrise Assisted Living of Morris Plains",
+      "city": "Morris Plains",
+      "county": "Morris"
+    },
+    {
+      "name": "CareOne at Madison Ave",
+      "city": "Morristown",
+      "county": "Morris"
+    },
+    {
+      "name": "CareOne at Morris",
+      "city": "Parsippany-Troy Hills",
+      "county": "Morris"
+    },
+    {
+      "name": "Cedar Crest",
+      "city": "Pompton Plains",
+      "county": "Morris"
+    },
+    {
+      "name": "Renaissance Gardens at Cedar Crest",
+      "city": "Pompton Plains",
+      "county": "Morris"
+    },
+    {
+      "name": "Sunrise Assisted Living of Randolph",
+      "city": "Randolph",
+      "county": "Morris"
+    },
+    {
+      "name": "Arden Courts Alzheimers Assisted Living",
+      "city": "Whippany",
+      "county": "Morris"
+    },
+    {
+      "name": "Brandywine Assisted Living Reflections",
+      "city": "Brick",
+      "county": "Ocean"
+    },
+    {
+      "name": "Brandywine Senior Living",
+      "city": "Brick",
+      "county": "Ocean"
+    },
+    {
+      "name": "Haven At Shorrock Gardens",
+      "city": "Brick",
+      "county": "Ocean"
+    },
+    {
+      "name": "Sunrise Assisted Living of Brick",
+      "city": "Brick",
+      "county": "Ocean"
+    },
+    {
+      "name": "Bartley Assisted Living-The Orchards",
+      "city": "Jackson",
+      "county": "Ocean"
+    },
+    {
+      "name": "Bartley Healthcare Nursing & Rehabilitation",
+      "city": "Jackson",
+      "county": "Ocean"
+    },
+    {
+      "name": "Bella Terra",
+      "city": "Jackson",
+      "county": "Ocean"
+    },
+    {
+      "name": "Harrogate Life Care Retirement",
+      "city": "Lakewood",
+      "county": "Ocean"
+    },
+    {
+      "name": "Leisure Park",
+      "city": "Lakewood",
+      "county": "Ocean"
+    },
+    {
+      "name": "Summerville at Stafford",
+      "city": "Manahawkin",
+      "county": "Ocean"
+    },
+    {
+      "name": "The Renaissance",
+      "city": "Waretown",
+      "county": "Ocean"
+    },
+    {
+      "name": "Crestwood Manor",
+      "city": "Whiting",
+      "county": "Ocean"
+    },
+    {
+      "name": "The Pines at Whiting",
+      "city": "Whiting",
+      "county": "Ocean"
+    },
+    {
+      "name": "Compassionate Reach Senior Care Services",
+      "city": "Bloomfield",
+      "county": "Passaic"
+    },
+    {
+      "name": "Daughters Of Miriam Center / The Gallen Institute",
+      "city": "Clifton",
+      "county": "Passaic"
+    },
+    {
+      "name": "Arden Courts Alzheimers Assisted Living",
+      "city": "Wayne",
+      "county": "Passaic"
+    },
+    {
+      "name": "Emeritus at Wayne",
+      "city": "Wayne",
+      "county": "Passaic"
+    },
+    {
+      "name": "Preakness Healthcare Center",
+      "city": "Wayne",
+      "county": "Passaic"
+    },
+    {
+      "name": "Sunrise Assisted Living of Wayne",
+      "city": "Wayne",
+      "county": "Passaic"
+    },
+    {
+      "name": "Friends Village At Woodstown",
+      "city": "Woodstown",
+      "county": "Salem"
+    },
+    {
+      "name": "Fellowship Village",
+      "city": "Basking Ridge",
+      "county": "Somerset"
+    },
+    {
+      "name": "Sunrise Assisted Living of Westfield",
+      "city": "Basking Ridge",
+      "county": "Somerset"
+    },
+    {
+      "name": "Brandywine Assisted Living Middlebrook Crossing",
+      "city": "Bound Brook",
+      "county": "Somerset"
+    },
+    {
+      "name": "The Chelsea at Bridgewater",
+      "city": "Bridgewater",
+      "county": "Somerset"
+    },
+    {
+      "name": "Emeritus at Hillsborough",
+      "city": "Hillsborough",
+      "county": "Somerset"
+    },
+    {
+      "name": "Harborside Healthcare Woods Edge",
+      "city": "North Bridgewater",
+      "county": "Somerset"
+    },
+    {
+      "name": "Stonebridge at Montgomery",
+      "city": "Skillman",
+      "county": "Somerset"
+    },
+    {
+      "name": "Bentley Assisted Living",
+      "city": "Branchville",
+      "county": "Sussex"
+    },
+    {
+      "name": "Bristol Glen",
+      "city": "Newton",
+      "county": "Sussex"
+    },
+    {
+      "name": "The Chelsea at Fanwood",
+      "city": "Fanwood",
+      "county": "Union"
+    },
+    {
+      "name": "Delaire Nursing & Convalescent",
+      "city": "Linden",
+      "county": "Union"
+    },
+    {
+      "name": "Brighton Gardens of Mountainside",
+      "city": "Mountainside",
+      "county": "Union"
+    },
+    {
+      "name": "Genesis Elder Care Center",
+      "city": "Westfield",
+      "county": "Union"
+    },
+    {
+      "name": "Heath Village",
+      "city": "Hackettstown",
+      "county": "Warren"
+    }
+  ]
+}

@@ -12,10 +12,33 @@ export interface Source {
   url: string | null;
 }
 
+export interface Helpline {
+  name: string;
+  phone: string;
+  url: string;
+  description: string;
+}
+export interface Facility {
+  name: string;
+  city: string;
+  county: string;
+}
+export interface VideoLink {
+  title: string;
+  url: string;
+}
+export interface ResourcesPayload {
+  helplines: Helpline[];
+  facilities: Facility[];
+  facilities_note: string;
+  videos: VideoLink[];
+}
+
 export interface StreamHandlers {
   onDelta: (text: string) => void;
   onSources?: (sources: Source[]) => void;
   onSignal?: (signal: Record<string, unknown>) => void;
+  onResources?: (resources: ResourcesPayload) => void;
 }
 
 export interface WellbeingPoint {
@@ -87,6 +110,7 @@ export async function streamChat(
       const parsed = JSON.parse(data);
       if (event === "delta") handlers.onDelta(parsed.text ?? "");
       else if (event === "sources") handlers.onSources?.(parsed.sources ?? []);
+      else if (event === "resources") handlers.onResources?.(parsed);
       else if (event === "signal") handlers.onSignal?.(parsed);
       else if (event === "error") throw new Error(parsed.message ?? "stream error");
     }

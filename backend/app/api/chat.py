@@ -58,6 +58,8 @@ def chat(req: ChatRequest) -> StreamingResponse:
                     yield _sse("sources", {"sources": [asdict(s) for s in sources]})
                 elif kind == "delta":
                     yield _sse("delta", {"text": payload})
+                elif kind == "resources":
+                    yield _sse("resources", payload)  # type: ignore[arg-type]
                 elif kind == "signal":
                     yield _sse("signal", payload)  # type: ignore[arg-type]
             yield _sse("done", {})

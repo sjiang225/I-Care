@@ -1,8 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { streamChat, type ChatMessage, type Source } from "@/lib/api";
+import {
+  streamChat,
+  type ChatMessage,
+  type Source,
+  type ResourcesPayload,
+} from "@/lib/api";
 import WellbeingView from "@/components/WellbeingView";
+import ResourceCard from "@/components/ResourceCard";
 import {
   speechSupported,
   ttsSupported,
@@ -16,7 +22,11 @@ const GREETING =
   "Hi, I'm I-Care. I'm here to support you as a dementia caregiver. " +
   "Ask me anything — about behaviors, daily care, or how you're feeling.";
 
-type UiMessage = ChatMessage & { sources?: Source[]; wellbeingLogged?: boolean };
+type UiMessage = ChatMessage & {
+  sources?: Source[];
+  wellbeingLogged?: boolean;
+  resources?: ResourcesPayload;
+};
 
 export default function Chat() {
   const [messages, setMessages] = useState<UiMessage[]>([]);
@@ -64,27 +74,35 @@ export default function Chat() {
       let full = "";
       let sources: Source[] | undefined;
       let wellbeingLogged = false;
+      let resources: ResourcesPayload | undefined;
+      const paint = () =>
+        setMessages((m) => {
+          const copy = [...m];
+          copy[copy.length - 1] = {
+            role: "assistant",
+            content: full,
+            sources,
+            wellbeingLogged,
+            resources,
+          };
+          return copy;
+        });
       await streamChat(
         next.map((m) => ({ role: m.role, content: m.content })),
         {
           onDelta: (delta) => {
             full += delta;
-            setMessages((m) => {
-              const copy = [...m];
-              copy[copy.length - 1] = {
-                role: "assistant",
-                content: full,
-                sources,
-                wellbeingLogged,
-              };
-              return copy;
-            });
+            paint();
           },
           onSources: (s) => {
             sources = s;
           },
           onSignal: (sig) => {
             if (sig && "wellbeing" in sig) wellbeingLogged = true;
+          },
+          onResources: (r) => {
+            resources = r;
+            paint();
           },
         },
         sessionIdRef.current
@@ -187,6 +205,9 @@ export default function Chat() {
               >
                 💚 Noted how you&apos;re feeling — view trend
               </button>
+            )}
+            {m.role === "assistant" && m.resources && (
+              <ResourceCard resources={m.resources} />
             )}
             {m.role === "assistant" && m.sources && m.sources.length > 0 && (
               <div className="sources">

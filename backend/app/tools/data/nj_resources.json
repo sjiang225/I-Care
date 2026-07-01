@@ -1,0 +1,46 @@
+{
+  "validation": "pending_advisory_review",
+  "note": "Only high-confidence, widely-published phone numbers are included. NJ state-agency contacts (Division of Aging Services / county Area Agencies on Aging) to be added after advisory/clinical review. Do NOT add unverified numbers.",
+  "resources": [
+    {
+      "name": "Care2Caregivers Helpline",
+      "phone": "1-800-424-2494",
+      "url": "https://care2caregivers.com",
+      "category": "helpline",
+      "statewide": true,
+      "description": "Rutgers Health peer-support helpline for NJ dementia caregivers, staffed by trained peers."
+    },
+    {
+      "name": "Alzheimer's Association 24/7 Helpline",
+      "phone": "1-800-272-3900",
+      "url": "https://www.alz.org/help-support/resources/helpline",
+      "category": "helpline",
+      "statewide": true,
+      "description": "Free 24/7 helpline for information, referrals, and support on Alzheimer's and dementia."
+    },
+    {
+      "name": "Eldercare Locator",
+      "phone": "1-800-677-1116",
+      "url": "https://eldercare.acl.gov",
+      "category": "referral",
+      "statewide": true,
+      "description": "U.S. Administration on Aging service that connects you to local Area Agencies on Aging and services by ZIP code."
+    },
+    {
+      "name": "988 Suicide & Crisis Lifeline",
+      "phone": "988",
+      "url": "https://988lifeline.org",
+      "category": "crisis",
+      "statewide": true,
+      "description": "Free, confidential crisis support 24/7 (call or text 988) for anyone in emotional distress."
+    },
+    {
+      "name": "CareNewJersey Senior Care Referral",
+      "phone": "1-800-989-8137",
+      "url": "https://www.carenewjersey.org",
+      "category": "referral",
+      "statewide": true,
+      "description": "New Jersey eldercare referral line for help finding local senior-care services."
+    }
+  ]
+}

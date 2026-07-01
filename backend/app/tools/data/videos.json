@@ -1,0 +1,91 @@
+{
+  "source": "https://care2caregivers.com/help-for-caregivers/videos/",
+  "fetched": "2026-07-01",
+  "note": "COPSA/Care2Caregivers YouTube videos. Categories align with KB categories. v1 surfaces language=en only.",
+  "videos": [
+    {
+      "title": "Compassion Fatigue and Burnout",
+      "youtube_id": "aHVhyiivW70",
+      "url": "https://www.youtube.com/watch?v=aHVhyiivW70",
+      "category": "caregiver_selfcare",
+      "language": "en"
+    },
+    {
+      "title": "Sleep — Why It's So Important",
+      "youtube_id": "bcF1WHFTrf4",
+      "url": "https://www.youtube.com/watch?v=bcF1WHFTrf4",
+      "category": "sleep",
+      "language": "en"
+    },
+    {
+      "title": "Social Connections",
+      "youtube_id": "1Lbw_F8upBA",
+      "url": "https://www.youtube.com/watch?v=1Lbw_F8upBA",
+      "category": "caregiver_selfcare",
+      "language": "en"
+    },
+    {
+      "title": "Aging Well",
+      "youtube_id": "nReElBLT4BQ",
+      "url": "https://www.youtube.com/watch?v=nReElBLT4BQ",
+      "category": "understanding_dementia",
+      "language": "en"
+    },
+    {
+      "title": "Managing Challenging Behaviors",
+      "youtube_id": "I8-1etNnpws",
+      "url": "https://www.youtube.com/watch?v=I8-1etNnpws",
+      "category": "challenging_behaviors",
+      "language": "en"
+    },
+    {
+      "title": "Building Wellness to Manage Challenges (Webinar)",
+      "youtube_id": "iN_R4KByC_k",
+      "url": "https://www.youtube.com/watch?v=iN_R4KByC_k",
+      "category": "caregiver_selfcare",
+      "language": "en"
+    },
+    {
+      "title": "Affirmations: 90 Seconds of Resiliency",
+      "youtube_id": "uIP1seHLn-k",
+      "url": "https://www.youtube.com/watch?v=uIP1seHLn-k",
+      "category": "caregiver_selfcare",
+      "language": "en"
+    },
+    {
+      "title": "Strengths: 90 Seconds of Resiliency",
+      "youtube_id": "QpHnaqQ3wUM",
+      "url": "https://www.youtube.com/watch?v=QpHnaqQ3wUM",
+      "category": "caregiver_selfcare",
+      "language": "en"
+    },
+    {
+      "title": "Circle of Harmony: Managing Behavioral Disturbances in Adult Day Dementia Programs",
+      "youtube_id": "NKedFA1MMv8",
+      "url": "https://www.youtube.com/watch?v=NKedFA1MMv8",
+      "category": "challenging_behaviors",
+      "language": "en"
+    },
+    {
+      "title": "Bridges: A Toolkit for Family Caregivers of People with Dementia",
+      "youtube_id": "47Z35oQWqDU",
+      "url": "https://www.youtube.com/watch?v=47Z35oQWqDU",
+      "category": "caregiver_selfcare",
+      "language": "en"
+    },
+    {
+      "title": "Bridges: A Toolkit for Family Caregivers (Spanish)",
+      "youtube_id": "8etYlakSMxg",
+      "url": "https://www.youtube.com/watch?v=8etYlakSMxg",
+      "category": "caregiver_selfcare",
+      "language": "es"
+    },
+    {
+      "title": "Bridges: A Toolkit for Family Caregivers (Russian)",
+      "youtube_id": "XvlbXfKIbng",
+      "url": "https://www.youtube.com/watch?v=XvlbXfKIbng",
+      "category": "caregiver_selfcare",
+      "language": "ru"
+    }
+  ]
+}

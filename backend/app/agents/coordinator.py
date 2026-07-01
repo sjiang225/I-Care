@@ -15,6 +15,7 @@ from typing import Iterator
 
 from ..llm.base import Message, ToolSpec
 from ..llm.factory import get_llm
+from ..tools import resources as resources_tool
 from .base import AgentContext, AgentEvent
 from .education import EducationAgent
 from .emotion import EmotionSupportAgent
@@ -35,6 +36,14 @@ ROUTE_SPEC = ToolSpec(
                 "type": "boolean",
                 "description": "True if they express stress, distress, or emotional burden.",
             },
+            "needs_resources": {
+                "type": "boolean",
+                "description": "True if they ask about finding care, facilities, services, or local/NJ help.",
+            },
+            "county": {
+                "type": "string",
+                "description": "NJ county name (e.g. 'Bergen') if a location is mentioned; else omit.",
+            },
             "primary": {
                 "type": "string",
                 "enum": ["education", "emotion"],
@@ -48,7 +57,9 @@ ROUTE_SPEC = ToolSpec(
 ROUTE_SYSTEM = (
     "You route messages from dementia caregivers in a support app. "
     "Decide whether the latest message needs practical/educational guidance, "
-    "emotional support, or both. Record your decision by calling the route function."
+    "emotional support, and/or local resources (finding care, facilities, "
+    "services, or help — set needs_resources and extract a NJ county if named). "
+    "Record your decision by calling the route function."
 )
 
 # Shown between the Emotion and Education segments when both run.
@@ -95,6 +106,14 @@ class Coordinator:
             yield ("delta", safety.message or "")
 
         route = self._route(ctx)
+
+        # Deterministically fetch NJ resources when the router flags a need, and
+        # hand them to the Education agent via flags (no extra LLM call).
+        if route.get("needs_resources"):
+            ctx.flags["resources"] = resources_tool.get_local_resources(
+                county=route.get("county")
+            )
+
         plan = self._build_plan(route)
         yield ("signal", {"plan": plan})
 

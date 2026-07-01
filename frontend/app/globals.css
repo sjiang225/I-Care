@@ -136,6 +136,63 @@ button {
   padding: 24px;
 }
 
+/* Local resources / videos card under an answer */
+.resource-card {
+  align-self: flex-start;
+  max-width: 92%;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.rc-section {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.rc-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--teal-dark);
+}
+.rc-item {
+  font-size: 0.85rem;
+}
+.rc-phone {
+  color: var(--teal-dark);
+  font-weight: 600;
+  text-decoration: none;
+}
+.rc-desc {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.rc-facility {
+  font-weight: 600;
+}
+.rc-city {
+  color: var(--muted);
+}
+.rc-note {
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-style: italic;
+  margin-top: 2px;
+}
+.rc-videos {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.rc-video {
+  color: var(--teal-dark);
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
 /* Inline "well-being noted" chip under an answer */
 .wb-noted {
   align-self: flex-start;

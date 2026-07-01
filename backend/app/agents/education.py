@@ -5,6 +5,7 @@ grounded answer. Emits the source documents so the UI can show citations.
 """
 from __future__ import annotations
 
+from collections import Counter
 from dataclasses import dataclass
 from typing import Iterator
 
@@ -12,6 +13,7 @@ from ..config import get_settings
 from ..kb.retrieve import retrieve
 from ..llm.base import Message
 from ..llm.factory import get_llm
+from ..tools.resources import pick_videos
 from .base import AgentContext, AgentEvent
 
 EDUCATION_SYSTEM = """You are I-Care, a warm, patient companion for dementia \
@@ -82,12 +84,22 @@ class EducationAgent:
         context, sources = build_context_and_sources(hits)
         yield ("sources", sources)
 
+        # Assemble local resources (from the router) + topic-relevant videos.
+        extras = self._resources_payload(ctx, hits)
+        if extras:
+            yield ("resources", extras)
+
         # Add an empathetic lead-in only if emotional distress is present AND the
         # Emotion agent has NOT already handled empathy in this turn (composition).
         needs_empathy = ctx.flags.get("needs_emotion") and not ctx.flags.get(
             "empathy_done"
         )
         tone = _EMOTION_TONE if needs_empathy else ""
+        if extras:
+            tone += (
+                "\n- Local NJ resources and/or a short related video are shown "
+                "below your answer; you may briefly invite them to look."
+            )
         system = Message(
             role="system",
             content=EDUCATION_SYSTEM.format(context=context, tone=tone),
@@ -96,3 +108,22 @@ class EducationAgent:
 
         for delta in get_llm().stream_chat(prompt, temperature=0.4):
             yield ("delta", delta)
+
+    def _resources_payload(self, ctx: AgentContext, hits) -> dict | None:
+        """Helplines/facilities (from router flags) + topic videos, or None."""
+        res = ctx.flags.get("resources") or {}
+        categories = Counter(
+            h.metadata.get("category") for h in hits if h.metadata.get("category")
+        )
+        dominant = categories.most_common(1)[0][0] if categories else None
+        videos = pick_videos(dominant) if dominant else []
+
+        payload = {
+            "helplines": res.get("helplines", []),
+            "facilities": res.get("facilities", []),
+            "facilities_note": res.get("facilities_note", ""),
+            "videos": videos,
+        }
+        if payload["helplines"] or payload["facilities"] or payload["videos"]:
+            return payload
+        return None
