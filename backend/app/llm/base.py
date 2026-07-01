@@ -13,23 +13,46 @@ To plug in a self-hosted model later:
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Iterator, Literal, Protocol, runtime_checkable
+from typing import Any, Iterator, Literal, Protocol, runtime_checkable
 
-Role = Literal["system", "user", "assistant"]
+Role = Literal["system", "user", "assistant", "tool"]
+
+
+@dataclass
+class ToolSpec:
+    """A tool/function the model may call (OpenAI-compatible JSON schema)."""
+
+    name: str
+    description: str
+    parameters: dict  # JSON schema for the arguments object
+
+
+@dataclass
+class ToolCall:
+    """A tool invocation requested by the model."""
+
+    id: str
+    name: str
+    arguments: dict
 
 
 @dataclass
 class Message:
     role: Role
-    content: str
+    content: str = ""
+    # Present on assistant turns that request tool calls:
+    tool_calls: list[ToolCall] = field(default_factory=list)
+    # Present on role="tool" result turns:
+    tool_call_id: str | None = None
 
 
 @dataclass
 class ChatResult:
-    """Non-streaming chat response."""
+    """Non-streaming chat response (may carry tool calls instead of content)."""
 
     content: str
     model: str
+    tool_calls: list[ToolCall] = field(default_factory=list)
     raw: dict = field(default_factory=dict)
 
 
@@ -43,10 +66,12 @@ class LLMProvider(Protocol):
         self,
         messages: list[Message],
         *,
+        tools: list[ToolSpec] | None = None,
+        tool_choice: Any = None,
         temperature: float = 0.7,
         max_tokens: int | None = None,
     ) -> ChatResult:
-        """Return a full chat completion."""
+        """Return a full chat completion, optionally with tool calls."""
         ...
 
     def stream_chat(

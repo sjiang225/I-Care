@@ -26,6 +26,17 @@ export default function Chat() {
 
   const dictationRef = useRef<Dictation | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const sessionIdRef = useRef<string>("");
+
+  // Stable per-device session id so well-being can be tracked over time.
+  useEffect(() => {
+    let sid = localStorage.getItem("icare_session_id");
+    if (!sid) {
+      sid = crypto.randomUUID();
+      localStorage.setItem("icare_session_id", sid);
+    }
+    sessionIdRef.current = sid;
+  }, []);
 
   const canSpeechIn = speechSupported();
   const canSpeechOut = ttsSupported();
@@ -64,7 +75,8 @@ export default function Chat() {
           onSources: (s) => {
             sources = s;
           },
-        }
+        },
+        sessionIdRef.current
       );
       if (readAloud && full) speak(full);
     } catch (err) {

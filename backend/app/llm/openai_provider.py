@@ -6,11 +6,12 @@ small model.
 """
 from __future__ import annotations
 
-from typing import Iterator
+import json
+from typing import Any, Iterator
 
 from openai import OpenAI
 
-from .base import ChatResult, Message
+from .base import ChatResult, Message, ToolCall, ToolSpec
 
 
 class OpenAIProvider:
@@ -29,24 +30,91 @@ class OpenAIProvider:
         self._embed_model = embed_model
 
     def _to_openai(self, messages: list[Message]) -> list[dict]:
-        return [{"role": m.role, "content": m.content} for m in messages]
+        out: list[dict] = []
+        for m in messages:
+            if m.role == "tool":
+                out.append(
+                    {
+                        "role": "tool",
+                        "tool_call_id": m.tool_call_id,
+                        "content": m.content,
+                    }
+                )
+            elif m.tool_calls:
+                out.append(
+                    {
+                        "role": "assistant",
+                        "content": m.content or None,
+                        "tool_calls": [
+                            {
+                                "id": tc.id,
+                                "type": "function",
+                                "function": {
+                                    "name": tc.name,
+                                    "arguments": json.dumps(tc.arguments),
+                                },
+                            }
+                            for tc in m.tool_calls
+                        ],
+                    }
+                )
+            else:
+                out.append({"role": m.role, "content": m.content})
+        return out
+
+    def _to_openai_tools(self, tools: list[ToolSpec] | None) -> list[dict] | None:
+        if not tools:
+            return None
+        return [
+            {
+                "type": "function",
+                "function": {
+                    "name": t.name,
+                    "description": t.description,
+                    "parameters": t.parameters,
+                },
+            }
+            for t in tools
+        ]
 
     def chat(
         self,
         messages: list[Message],
         *,
+        tools: list[ToolSpec] | None = None,
+        tool_choice: Any = None,
         temperature: float = 0.7,
         max_tokens: int | None = None,
     ) -> ChatResult:
-        resp = self._client.chat.completions.create(
-            model=self._chat_model,
-            messages=self._to_openai(messages),
-            temperature=temperature,
-            max_tokens=max_tokens,
-        )
+        kwargs: dict = {
+            "model": self._chat_model,
+            "messages": self._to_openai(messages),
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+        }
+        oai_tools = self._to_openai_tools(tools)
+        if oai_tools:
+            kwargs["tools"] = oai_tools
+            if tool_choice is not None:
+                kwargs["tool_choice"] = tool_choice
+
+        resp = self._client.chat.completions.create(**kwargs)
+        msg = resp.choices[0].message
+
+        tool_calls: list[ToolCall] = []
+        for tc in msg.tool_calls or []:
+            try:
+                args = json.loads(tc.function.arguments or "{}")
+            except json.JSONDecodeError:
+                args = {}
+            tool_calls.append(
+                ToolCall(id=tc.id, name=tc.function.name, arguments=args)
+            )
+
         return ChatResult(
-            content=resp.choices[0].message.content or "",
+            content=msg.content or "",
             model=resp.model,
+            tool_calls=tool_calls,
             raw=resp.model_dump(),
         )
 

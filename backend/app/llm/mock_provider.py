@@ -6,9 +6,28 @@ agents) can be built and demoed before real keys / compliant hosting exist.
 from __future__ import annotations
 
 import hashlib
-from typing import Iterator
+from typing import Any, Iterator
 
-from .base import ChatResult, Message
+from .base import ChatResult, Message, ToolCall, ToolSpec
+
+
+def _mock_args(spec: ToolSpec) -> dict:
+    """Fabricate plausible default arguments from a tool's JSON schema."""
+    args: dict = {}
+    props = spec.parameters.get("properties", {})
+    for name, schema in props.items():
+        t = schema.get("type")
+        if "enum" in schema:
+            args[name] = schema["enum"][0]
+        elif t == "integer" or t == "number":
+            args[name] = schema.get("minimum", 0)
+        elif t == "array":
+            args[name] = []
+        elif t == "boolean":
+            args[name] = False
+        else:
+            args[name] = "mock"
+    return args
 
 _DISCLAIMER = (
     "(Mock mode) I-Care is an educational support tool, not a medical "
@@ -39,9 +58,28 @@ class MockProvider:
         self,
         messages: list[Message],
         *,
+        tools: list[ToolSpec] | None = None,
+        tool_choice: Any = None,
         temperature: float = 0.7,
         max_tokens: int | None = None,
     ) -> ChatResult:
+        # If a specific tool is forced, return a canned call so tool-using
+        # agent paths are exercisable without an API key.
+        if tools and isinstance(tool_choice, dict):
+            forced = tool_choice.get("function", {}).get("name")
+            spec = next((t for t in tools if t.name == forced), None)
+            if spec is not None:
+                return ChatResult(
+                    content="",
+                    model=self._chat_model,
+                    tool_calls=[
+                        ToolCall(
+                            id="mock-call-1",
+                            name=spec.name,
+                            arguments=_mock_args(spec),
+                        )
+                    ],
+                )
         return ChatResult(content=_reply_for(messages), model=self._chat_model)
 
     def stream_chat(

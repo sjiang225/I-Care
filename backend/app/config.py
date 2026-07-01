@@ -24,6 +24,9 @@ class Settings(BaseSettings):
     kb_db_path: str = "data/kb.sqlite3"
     rag_top_k: int = 4
 
+    # Application database (sessions, well-being logs)
+    app_db_path: str = "data/app.sqlite3"
+
     # Server
     cors_origins: str = "http://localhost:3000"
 

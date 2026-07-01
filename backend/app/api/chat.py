@@ -1,8 +1,8 @@
-"""Chat API: streams answers from the agent pipeline.
+"""Chat API: streams answers from the multi-agent pipeline.
 
-M2 (current): routes to the Education Agent (RAG over Care2Caregivers) and
-streams a grounded, citable answer. The Coordinator + Emotion-Support agents
-will be layered in next.
+Routes every turn through the Coordinator, which runs a safety pre-check,
+decides between the Education (RAG) and Emotion-Support agents, and streams a
+grounded, empathetic answer with citations.
 """
 from __future__ import annotations
 
@@ -14,12 +14,14 @@ from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
-from ..agents.education import EducationAgent, Source
+from ..agents.base import AgentContext
+from ..agents.coordinator import Coordinator
+from ..agents.education import Source
 from ..llm.base import Message
 
 router = APIRouter(prefix="/api", tags=["chat"])
 
-_education = EducationAgent()
+_coordinator = Coordinator()
 
 
 class ChatMessage(BaseModel):
@@ -29,6 +31,7 @@ class ChatMessage(BaseModel):
 
 class ChatRequest(BaseModel):
     messages: list[ChatMessage]
+    session_id: str = "default"
 
 
 def _to_messages(req: ChatRequest) -> list[Message]:
@@ -45,16 +48,18 @@ def _sse(event: str, data: dict) -> str:
 
 @router.post("/chat")
 def chat(req: ChatRequest) -> StreamingResponse:
-    messages = _to_messages(req)
+    ctx = AgentContext(messages=_to_messages(req), session_id=req.session_id)
 
     def event_stream() -> Iterator[str]:
         try:
-            for kind, payload in _education.stream(messages):
+            for kind, payload in _coordinator.stream(ctx):
                 if kind == "sources":
                     sources: list[Source] = payload  # type: ignore[assignment]
                     yield _sse("sources", {"sources": [asdict(s) for s in sources]})
                 elif kind == "delta":
                     yield _sse("delta", {"text": payload})
+                elif kind == "signal":
+                    yield _sse("signal", payload)  # type: ignore[arg-type]
             yield _sse("done", {})
         except Exception as exc:
             yield _sse("error", {"message": str(exc)})
