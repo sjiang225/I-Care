@@ -13,6 +13,7 @@ from __future__ import annotations
 
 from typing import Iterator
 
+from ..db import get_db
 from ..llm.base import Message, ToolSpec
 from ..llm.factory import get_llm
 from ..tools import resources as resources_tool
@@ -21,6 +22,7 @@ from .education import EducationAgent
 from .emotion import EmotionSupportAgent
 from .registry import AgentRegistry
 from .safety import check_safety
+from .state import assess_caregiver_state
 
 ROUTE_SPEC = ToolSpec(
     name="route",
@@ -113,6 +115,15 @@ class Coordinator:
             ctx.flags["resources"] = resources_tool.get_local_resources(
                 county=route.get("county")
             )
+
+        # Well-being feedback loop: if the stored trend shows high/rising stress,
+        # adopt a warmer posture and surface self-care support (no extra LLM call).
+        state = assess_caregiver_state(get_db().wellbeing_summary(ctx.session_id))
+        if state.high_stress:
+            ctx.flags["high_stress"] = True
+            ctx.flags["caregiver_state"] = state.note
+            ctx.flags["extra_video_category"] = "caregiver_selfcare"
+            ctx.flags.setdefault("resources", resources_tool.get_local_resources())
 
         plan = self._build_plan(route)
         yield ("signal", {"plan": plan})

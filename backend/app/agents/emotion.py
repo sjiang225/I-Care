@@ -81,9 +81,10 @@ class EmotionSupportAgent:
             yield ("signal", {"wellbeing": logged})
 
         hits = retrieve(ctx.last_user_text(), k=3)
-        system = Message(
-            role="system", content=EMOTION_SYSTEM.format(context=_plain_context(hits))
-        )
+        system_content = EMOTION_SYSTEM.format(context=_plain_context(hits))
+        if ctx.flags.get("caregiver_state"):
+            system_content += "\n\n" + ctx.flags["caregiver_state"]
+        system = Message(role="system", content=system_content)
         prompt = [system, *ctx.recent(self._history_turns)]
         for delta in get_llm().stream_chat(prompt, temperature=0.6):
             yield ("delta", delta)

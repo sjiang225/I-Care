@@ -89,12 +89,15 @@ class EducationAgent:
         if extras:
             yield ("resources", extras)
 
-        # Add an empathetic lead-in only if emotional distress is present AND the
-        # Emotion agent has NOT already handled empathy in this turn (composition).
-        needs_empathy = ctx.flags.get("needs_emotion") and not ctx.flags.get(
-            "empathy_done"
-        )
+        # Add an empathetic lead-in when emotional distress is present OR the
+        # well-being trend shows high stress — and the Emotion agent hasn't
+        # already handled empathy this turn (composition).
+        needs_empathy = (
+            ctx.flags.get("needs_emotion") or ctx.flags.get("high_stress")
+        ) and not ctx.flags.get("empathy_done")
         tone = _EMOTION_TONE if needs_empathy else ""
+        if ctx.flags.get("caregiver_state") and not ctx.flags.get("empathy_done"):
+            tone += "\n- " + ctx.flags["caregiver_state"]
         if extras:
             tone += (
                 "\n- Local NJ resources and/or a short related video are shown "
@@ -117,6 +120,14 @@ class EducationAgent:
         )
         dominant = categories.most_common(1)[0][0] if categories else None
         videos = pick_videos(dominant) if dominant else []
+
+        # Under high stress, also surface a self-care video regardless of topic.
+        extra_cat = ctx.flags.get("extra_video_category")
+        if extra_cat:
+            urls = {v["url"] for v in videos}
+            for v in pick_videos(extra_cat, limit=1):
+                if v["url"] not in urls:
+                    videos.append(v)
 
         payload = {
             "helplines": res.get("helplines", []),
