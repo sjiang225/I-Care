@@ -2,6 +2,19 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
+  HeartHandshake,
+  LineChart,
+  Volume2,
+  VolumeX,
+  Mic,
+  ArrowUp,
+  Brain,
+  Heart,
+  Moon,
+  MapPin,
+  BookOpen,
+} from "lucide-react";
+import {
   streamChat,
   type ChatMessage,
   type Source,
@@ -9,6 +22,7 @@ import {
 } from "@/lib/api";
 import WellbeingView from "@/components/WellbeingView";
 import ResourceCard from "@/components/ResourceCard";
+import BrandMark from "@/components/BrandMark";
 import {
   speechSupported,
   ttsSupported,
@@ -18,15 +32,34 @@ import {
   type Dictation,
 } from "@/lib/speech";
 
-const GREETING =
-  "Hi, I'm I-Care. I'm here to support you as a dementia caregiver. " +
-  "Ask me anything — about behaviors, daily care, or how you're feeling.";
-
 type UiMessage = ChatMessage & {
   sources?: Source[];
   wellbeingLogged?: boolean;
   resources?: ResourcesPayload;
 };
+
+const SUGGESTED = [
+  {
+    icon: Brain,
+    label: "Managing difficult behaviors",
+    text: "How do I handle challenging behaviors like agitation or aggression?",
+  },
+  {
+    icon: Heart,
+    label: "I'm feeling overwhelmed",
+    text: "I feel overwhelmed and exhausted as a caregiver.",
+  },
+  {
+    icon: Moon,
+    label: "Sleep problems",
+    text: "My loved one is up all night. What can I do?",
+  },
+  {
+    icon: MapPin,
+    label: "Find local care in NJ",
+    text: "How do I find memory care near me in New Jersey?",
+  },
+];
 
 export default function Chat() {
   const [messages, setMessages] = useState<UiMessage[]>([]);
@@ -40,7 +73,6 @@ export default function Chat() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const sessionIdRef = useRef<string>("");
 
-  // Stable per-device session id so well-being can be tracked over time.
   useEffect(() => {
     let sid = localStorage.getItem("icare_session_id");
     if (!sid) {
@@ -50,24 +82,27 @@ export default function Chat() {
     sessionIdRef.current = sid;
   }, []);
 
-  const canSpeechIn = speechSupported();
-  const canSpeechOut = ttsSupported();
+  // Detect browser speech support AFTER mount only (avoids hydration mismatch).
+  const [canSpeechIn, setCanSpeechIn] = useState(false);
+  const [canSpeechOut, setCanSpeechOut] = useState(false);
+  useEffect(() => {
+    setCanSpeechIn(speechSupported());
+    setCanSpeechOut(ttsSupported());
+  }, []);
 
   useEffect(() => {
     scrollRef.current?.scrollTo(0, scrollRef.current.scrollHeight);
   }, [messages, sending]);
 
-  async function send() {
-    const text = input.trim();
-    if (!text || sending) return;
+  async function submit(text: string) {
+    const t = text.trim();
+    if (!t || sending) return;
     stopDictation();
 
-    const next: UiMessage[] = [...messages, { role: "user", content: text }];
+    const next: UiMessage[] = [...messages, { role: "user", content: t }];
     setMessages(next);
     setInput("");
     setSending(true);
-
-    // Placeholder assistant bubble we stream into.
     setMessages((m) => [...m, { role: "assistant", content: "" }]);
 
     try {
@@ -108,7 +143,7 @@ export default function Chat() {
         sessionIdRef.current
       );
       if (readAloud && full) speak(full);
-    } catch (err) {
+    } catch {
       setMessages((m) => {
         const copy = [...m];
         copy[copy.length - 1] = {
@@ -123,10 +158,7 @@ export default function Chat() {
   }
 
   function toggleDictation() {
-    if (listening) {
-      stopDictation();
-      return;
-    }
+    if (listening) return stopDictation();
     const d = startDictation(
       (text, isFinal) => {
         setInput(text);
@@ -163,113 +195,154 @@ export default function Chat() {
   return (
     <div className="app">
       <header className="header">
-        <span aria-hidden style={{ fontSize: "1.6rem" }}>🤝</span>
+        <BrandMark size={42} />
         <div>
           <h1>I-Care</h1>
-          <div className="tag">Dementia Caregiver Companion</div>
+          <div className="status">
+            <span className="status-dot" /> Online · Caregiver Companion
+          </div>
         </div>
-        <button
-          className="icon-btn"
-          style={{ marginLeft: "auto" }}
-          onClick={() => setView("wellbeing")}
-          aria-label="View your well-being trend"
-          title="Your well-being"
-        >
-          📈
-        </button>
-        {canSpeechOut && (
+        <div className="header-actions">
           <button
-            className={`icon-btn ${readAloud ? "active" : ""}`}
-            style={{ background: readAloud ? "#fff" : undefined }}
-            onClick={toggleReadAloud}
-            aria-label="Read answers aloud"
-            title="Read answers aloud"
+            className="ghost-btn"
+            onClick={() => setView("wellbeing")}
+            aria-label="Your well-being"
+            title="Your well-being"
           >
-            {readAloud ? "🔊" : "🔇"}
+            <LineChart size={20} />
           </button>
-        )}
+          {canSpeechOut && (
+            <button
+              className={`ghost-btn ${readAloud ? "on" : ""}`}
+              onClick={toggleReadAloud}
+              aria-label="Read answers aloud"
+              title="Read answers aloud"
+            >
+              {readAloud ? <Volume2 size={20} /> : <VolumeX size={20} />}
+            </button>
+          )}
+        </div>
       </header>
 
       <div className="messages" ref={scrollRef}>
-        {messages.length === 0 && <div className="empty">{GREETING}</div>}
+        {messages.length === 0 && (
+          <div className="welcome">
+            <BrandMark large />
+            <h2>Hi, I&apos;m I-Care</h2>
+            <p>
+              Your companion for dementia caregiving. Ask me anything — about
+              behaviors, daily care, local resources, or how you&apos;re feeling.
+            </p>
+            <div className="prompt-chips">
+              {SUGGESTED.map((s) => (
+                <button
+                  key={s.label}
+                  className="prompt-chip"
+                  onClick={() => submit(s.text)}
+                >
+                  <s.icon size={17} />
+                  {s.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {messages.map((m, i) => (
           <div key={i} className={`turn ${m.role}`}>
-            <div className={`bubble ${m.role}`}>
-              {m.content || (sending && i === messages.length - 1 ? "…" : "")}
-            </div>
-            {m.role === "assistant" && m.wellbeingLogged && (
-              <button
-                className="wb-noted"
-                onClick={() => setView("wellbeing")}
-                title="View your well-being trend"
-              >
-                💚 Noted how you&apos;re feeling — view trend
-              </button>
-            )}
-            {m.role === "assistant" && m.resources && (
-              <ResourceCard resources={m.resources} />
-            )}
-            {m.role === "assistant" && m.sources && m.sources.length > 0 && (
-              <div className="sources">
-                <span className="sources-label">Sources</span>
-                {m.sources.map((s) => (
-                  <span key={s.n} className="source-chip">
-                    {s.url ? (
-                      <a href={s.url} target="_blank" rel="noreferrer">
-                        [{s.n}] {s.title}
-                      </a>
-                    ) : (
-                      <>
-                        [{s.n}] {s.title}
-                      </>
-                    )}
-                  </span>
-                ))}
+            {m.role === "assistant" && (
+              <div className="msg-avatar">
+                <HeartHandshake size={18} />
               </div>
             )}
+            <div className="col">
+              <div className={`bubble ${m.role}`}>
+                {m.content ? (
+                  m.content
+                ) : sending && i === messages.length - 1 ? (
+                  <span className="typing">
+                    <span />
+                    <span />
+                    <span />
+                  </span>
+                ) : (
+                  ""
+                )}
+              </div>
+
+              {m.role === "assistant" && m.wellbeingLogged && (
+                <button className="wb-noted" onClick={() => setView("wellbeing")}>
+                  <Heart size={13} /> Noted how you&apos;re feeling — view trend
+                </button>
+              )}
+              {m.role === "assistant" && m.resources && (
+                <ResourceCard resources={m.resources} />
+              )}
+              {m.role === "assistant" && m.sources && m.sources.length > 0 && (
+                <div className="sources">
+                  <span className="sources-label">
+                    <BookOpen size={13} /> Sources
+                  </span>
+                  {m.sources.map((s) => (
+                    <span key={s.n} className="source-chip">
+                      {s.url ? (
+                        <a href={s.url} target="_blank" rel="noreferrer">
+                          [{s.n}] {s.title}
+                        </a>
+                      ) : (
+                        <>
+                          [{s.n}] {s.title}
+                        </>
+                      )}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         ))}
       </div>
 
-      <div className="composer">
-        {canSpeechIn && (
+      <div className="composer-wrap">
+        <div className="composer">
+          {canSpeechIn && (
+            <button
+              className={`round-btn mic ${listening ? "on" : ""}`}
+              onClick={toggleDictation}
+              aria-label={listening ? "Stop dictation" : "Speak"}
+              title={listening ? "Stop" : "Speak"}
+            >
+              <Mic size={20} />
+            </button>
+          )}
+          <textarea
+            rows={1}
+            placeholder="Type or speak your question…"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                submit(input);
+              }
+            }}
+          />
           <button
-            className={`icon-btn ${listening ? "active" : ""}`}
-            onClick={toggleDictation}
-            aria-label={listening ? "Stop dictation" : "Speak"}
-            title={listening ? "Stop" : "Speak"}
+            className="round-btn send"
+            onClick={() => submit(input)}
+            disabled={sending || !input.trim()}
+            aria-label="Send"
           >
-            🎤
+            <ArrowUp size={20} />
           </button>
-        )}
-        <textarea
-          rows={1}
-          placeholder="Type or speak your question…"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              send();
-            }
-          }}
-        />
-        <button
-          className="send-btn"
-          onClick={send}
-          disabled={sending || !input.trim()}
-          aria-label="Send"
-        >
-          ➤
-        </button>
+        </div>
+        <div className="footer">
+          I-Care is an educational tool, not medical advice. In an emergency call
+          911.
+          <br />
+          ©2026 Rutgers, The State University of New Jersey. All rights reserved.
+        </div>
       </div>
-
-      <footer className="footer">
-        ©2026 Rutgers, The State University of New Jersey, All rights reserved. Do
-        not copy or reproduce without permission.
-        <br />
-        I-Care is an educational tool, not medical advice. In an emergency call 911.
-      </footer>
     </div>
   );
 }

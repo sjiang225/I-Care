@@ -1,6 +1,6 @@
+import { Phone, Building2, PlayCircle } from "lucide-react";
 import type { ResourcesPayload } from "@/lib/api";
 
-// Turns "1-800-424-2494" / "988" into a tel: href.
 function telHref(phone: string): string {
   return "tel:" + phone.replace(/[^0-9]/g, "");
 }
@@ -16,11 +16,13 @@ export default function ResourceCard({
     <div className="resource-card">
       {helplines.length > 0 && (
         <div className="rc-section">
-          <div className="rc-title">☎ Helplines</div>
+          <div className="rc-title">
+            <Phone size={15} /> Helplines
+          </div>
           {helplines.map((h) => (
             <div key={h.name} className="rc-item">
               <a className="rc-phone" href={telHref(h.phone)}>
-                {h.name} · {h.phone}
+                <Phone size={13} /> {h.name} · {h.phone}
               </a>
               <div className="rc-desc">{h.description}</div>
             </div>
@@ -31,7 +33,7 @@ export default function ResourceCard({
       {facilities.length > 0 && (
         <div className="rc-section">
           <div className="rc-title">
-            🏢 NJ facilities · {facilities[0].county} County
+            <Building2 size={15} /> NJ facilities · {facilities[0].county} County
           </div>
           {facilities.map((f) => (
             <div key={`${f.name}-${f.city}`} className="rc-item">
@@ -45,20 +47,20 @@ export default function ResourceCard({
 
       {videos.length > 0 && (
         <div className="rc-section">
-          <div className="rc-title">📺 Related videos</div>
-          <div className="rc-videos">
-            {videos.map((v) => (
-              <a
-                key={v.url}
-                className="rc-video"
-                href={v.url}
-                target="_blank"
-                rel="noreferrer"
-              >
-                ▶ {v.title}
-              </a>
-            ))}
+          <div className="rc-title">
+            <PlayCircle size={15} /> Related videos
           </div>
+          {videos.map((v) => (
+            <a
+              key={v.url}
+              className="rc-video"
+              href={v.url}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <PlayCircle size={15} /> {v.title}
+            </a>
+          ))}
         </div>
       )}
     </div>

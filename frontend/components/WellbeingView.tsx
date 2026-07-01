@@ -10,6 +10,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { ChevronLeft, BarChart3, Smile, HeartHandshake } from "lucide-react";
 import { getWellbeing, type WellbeingData } from "@/lib/api";
 
 // Stress level (1-5) -> color: calm green -> warning amber -> high red.
@@ -69,12 +70,14 @@ export default function WellbeingView({
   return (
     <div className="app">
       <header className="header">
-        <button className="icon-btn" onClick={onBack} aria-label="Back to chat">
-          ‹
+        <button className="ghost-btn" onClick={onBack} aria-label="Back to chat">
+          <ChevronLeft size={22} />
         </button>
         <div>
           <h1>Your Well-being</h1>
-          <div className="tag">How you've been feeling over time</div>
+          <div className="status" style={{ opacity: 0.9 }}>
+            How you&apos;ve been feeling over time
+          </div>
         </div>
       </header>
 
@@ -93,7 +96,9 @@ export default function WellbeingView({
             <p className="wb-summary">{summaryLine(data)}</p>
 
             <div className="wb-card">
-              <div className="wb-card-title">Stress over time (1–5)</div>
+              <div className="wb-card-title">
+                <BarChart3 size={16} /> Stress over time (1–5)
+              </div>
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={points} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
                   <XAxis dataKey="when" fontSize={11} tickLine={false} />
@@ -113,7 +118,9 @@ export default function WellbeingView({
 
             {data.summary.top_emotions.length > 0 && (
               <div className="wb-card">
-                <div className="wb-card-title">What you&apos;ve been feeling</div>
+                <div className="wb-card-title">
+                  <Smile size={16} /> What you&apos;ve been feeling
+                </div>
                 <div className="wb-emotions">
                   {data.summary.top_emotions.map(([emotion, n]) => (
                     <span key={emotion} className="wb-emotion-chip">
@@ -126,10 +133,13 @@ export default function WellbeingView({
 
             {highStress && (
               <div className="wb-care">
-                💛 It looks like this has been a heavy stretch. Please be gentle with
-                yourself — you matter too. You can reach the Care2Caregivers helpline
-                anytime at <strong>1-800-424-2494</strong>, and ask me for
-                &ldquo;self-care tips&rdquo; whenever you need them.
+                <HeartHandshake size={20} />
+                <div>
+                  It looks like this has been a heavy stretch. Please be gentle
+                  with yourself — you matter too. You can reach the Care2Caregivers
+                  helpline anytime at <strong>1-800-424-2494</strong>, and ask me
+                  for &ldquo;self-care tips&rdquo; whenever you need them.
+                </div>
               </div>
             )}
           </>
