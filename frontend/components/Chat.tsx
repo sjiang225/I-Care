@@ -23,6 +23,7 @@ import {
 import WellbeingView from "@/components/WellbeingView";
 import ResourceCard from "@/components/ResourceCard";
 import BrandMark from "@/components/BrandMark";
+import Markdown from "@/components/Markdown";
 import {
   speechSupported,
   ttsSupported,
@@ -258,7 +259,11 @@ export default function Chat() {
             <div className="col">
               <div className={`bubble ${m.role}`}>
                 {m.content ? (
-                  m.content
+                  m.role === "assistant" ? (
+                    <Markdown>{m.content}</Markdown>
+                  ) : (
+                    m.content
+                  )
                 ) : sending && i === messages.length - 1 ? (
                   <span className="typing">
                     <span />

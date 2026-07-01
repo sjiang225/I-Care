@@ -216,8 +216,8 @@ button {
 .bubble {
   padding: 12px 15px;
   border-radius: 16px;
-  white-space: pre-wrap;
   word-wrap: break-word;
+  overflow-wrap: anywhere;
   font-size: 0.98rem;
 }
 .bubble.assistant {
@@ -232,6 +232,37 @@ button {
   color: #fff;
   border-bottom-right-radius: 5px;
   box-shadow: var(--shadow-sm);
+  white-space: pre-wrap;
+}
+
+/* Rendered markdown inside assistant bubbles */
+.md > :first-child { margin-top: 0; }
+.md > :last-child { margin-bottom: 0; }
+.md p { margin: 0 0 10px; }
+.md ul,
+.md ol { margin: 0 0 10px; padding-left: 20px; }
+.md li { margin: 4px 0; }
+.md li::marker { color: var(--brand-600); font-weight: 600; }
+.md strong { color: var(--ink); font-weight: 700; }
+.md h1, .md h2, .md h3 {
+  font-size: 1rem;
+  margin: 12px 0 6px;
+  color: var(--ink);
+  font-weight: 700;
+}
+.md a { color: var(--brand-700); text-decoration: underline; }
+.md code {
+  background: var(--brand-50);
+  border: 1px solid var(--brand-100);
+  border-radius: 6px;
+  padding: 1px 5px;
+  font-size: 0.88em;
+}
+.md blockquote {
+  margin: 8px 0;
+  padding: 4px 12px;
+  border-left: 3px solid var(--brand-100);
+  color: var(--muted);
 }
 
 /* Typing indicator */
