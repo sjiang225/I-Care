@@ -48,7 +48,9 @@ class LocalVectorStore:
     def __init__(self, db_path: str | Path) -> None:
         self._path = str(db_path)
         Path(self._path).parent.mkdir(parents=True, exist_ok=True)
-        self._conn = sqlite3.connect(self._path)
+        # check_same_thread=False: FastAPI serves sync endpoints from a threadpool,
+        # so this connection is read across worker threads.
+        self._conn = sqlite3.connect(self._path, check_same_thread=False)
         self._init_schema()
 
     def _init_schema(self) -> None:
