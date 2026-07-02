@@ -35,12 +35,12 @@
       "description": "Free, confidential crisis support 24/7 (call or text 988) for anyone in emotional distress."
     },
     {
-      "name": "CareNewJersey Senior Care Referral",
+      "name": "CareNewJersey — NJ Eldercare Resources Directory",
       "phone": "1-800-989-8137",
-      "url": "https://www.carenewjersey.org",
+      "url": "https://www.carenewjersey.org/a4_new_jersey_resources.htm",
       "category": "referral",
       "statewide": true,
-      "description": "New Jersey eldercare referral line for help finding local senior-care services."
+      "description": "New Jersey eldercare resources directory and referral line for finding local senior-care services."
     }
   ]
 }
