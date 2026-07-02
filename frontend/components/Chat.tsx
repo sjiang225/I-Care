@@ -14,6 +14,7 @@ import {
   MapPin,
   BookOpen,
   Users,
+  SquarePen,
 } from "lucide-react";
 import {
   streamChat,
@@ -197,6 +198,15 @@ export default function Chat() {
     setReadAloud((v) => !v);
   }
 
+  function newChat() {
+    if (sending) return;
+    stopSpeaking();
+    stopDictation();
+    setMessages([]);
+    setInput("");
+    setView("chat");
+  }
+
   if (view === "wellbeing") {
     return (
       <WellbeingView
@@ -217,6 +227,16 @@ export default function Chat() {
           </div>
         </div>
         <div className="header-actions">
+          {messages.length > 0 && (
+            <button
+              className="ghost-btn"
+              onClick={newChat}
+              aria-label="New conversation"
+              title="New conversation"
+            >
+              <SquarePen size={20} />
+            </button>
+          )}
           <button
             className="ghost-btn"
             onClick={() => setView("wellbeing")}
