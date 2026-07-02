@@ -13,6 +13,7 @@ import {
   Moon,
   MapPin,
   BookOpen,
+  Users,
 } from "lucide-react";
 import {
   streamChat,
@@ -37,6 +38,7 @@ type UiMessage = ChatMessage & {
   sources?: Source[];
   wellbeingLogged?: boolean;
   resources?: ResourcesPayload;
+  peer?: boolean;
 };
 
 const SUGGESTED = [
@@ -59,6 +61,11 @@ const SUGGESTED = [
     icon: MapPin,
     label: "Find local care in NJ",
     text: "How do I find memory care near me in New Jersey?",
+  },
+  {
+    icon: Users,
+    label: "Talk to someone who gets it",
+    text: "I feel like no one understands what I'm going through.",
   },
 ];
 
@@ -111,6 +118,7 @@ export default function Chat() {
       let sources: Source[] | undefined;
       let wellbeingLogged = false;
       let resources: ResourcesPayload | undefined;
+      let peer = false;
       const paint = () =>
         setMessages((m) => {
           const copy = [...m];
@@ -120,6 +128,7 @@ export default function Chat() {
             sources,
             wellbeingLogged,
             resources,
+            peer,
           };
           return copy;
         });
@@ -135,6 +144,10 @@ export default function Chat() {
           },
           onSignal: (sig) => {
             if (sig && "wellbeing" in sig) wellbeingLogged = true;
+            if (sig && sig.agent === "peer") {
+              peer = true;
+              paint();
+            }
           },
           onResources: (r) => {
             resources = r;
@@ -257,6 +270,12 @@ export default function Chat() {
               </div>
             )}
             <div className="col">
+              {m.role === "assistant" && m.peer && (
+                <div className="peer-label">
+                  <Users size={13} /> Peer Companion · an AI reflecting fellow
+                  caregivers&apos; experiences
+                </div>
+              )}
               <div className={`bubble ${m.role}`}>
                 {m.content ? (
                   m.role === "assistant" ? (

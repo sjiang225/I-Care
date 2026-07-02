@@ -15,10 +15,8 @@ from typing import Iterator
 from ..kb.retrieve import retrieve
 from ..llm.base import Message
 from ..llm.factory import get_llm
-from ..tools import wellbeing as _wb  # noqa: F401  (registers the tool)
-from ..tools.base import registry
-from ..tools.wellbeing import LOG_WELLBEING_SPEC
 from .base import AgentContext, AgentEvent
+from .wellbeing_logging import assess_and_log_wellbeing
 
 EMOTION_SYSTEM = """You are I-Care, a warm, compassionate companion for dementia \
 caregivers. The caregiver is sharing how they feel.
@@ -50,33 +48,8 @@ class EmotionSupportAgent:
     def __init__(self, history_turns: int = 6) -> None:
         self._history_turns = history_turns
 
-    def _assess_and_log(self, ctx: AgentContext) -> dict | None:
-        """One forced tool call -> structured well-being signal, logged to DB."""
-        try:
-            result = get_llm().chat(
-                [
-                    Message(
-                        role="system",
-                        content=(
-                            "Assess the caregiver's emotional state from the "
-                            "conversation and record it by calling log_wellbeing."
-                        ),
-                    ),
-                    *ctx.recent(self._history_turns),
-                ],
-                tools=[LOG_WELLBEING_SPEC],
-                tool_choice={"type": "function", "function": {"name": "log_wellbeing"}},
-                temperature=0,
-            )
-            if result.tool_calls:
-                return registry.dispatch(result.tool_calls[0], ctx.session_id)
-        except Exception:
-            # Logging is best-effort; never block the supportive reply.
-            return None
-        return None
-
     def stream(self, ctx: AgentContext) -> Iterator[AgentEvent]:
-        logged = self._assess_and_log(ctx)
+        logged = assess_and_log_wellbeing(ctx, self._history_turns)
         if logged:
             yield ("signal", {"wellbeing": logged})
 

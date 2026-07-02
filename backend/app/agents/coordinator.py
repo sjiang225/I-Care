@@ -20,6 +20,7 @@ from ..tools import resources as resources_tool
 from .base import AgentContext, AgentEvent
 from .education import EducationAgent
 from .emotion import EmotionSupportAgent
+from .peer import PeerSupportAgent
 from .registry import AgentRegistry
 from .safety import check_safety
 from .state import assess_caregiver_state
@@ -36,7 +37,11 @@ ROUTE_SPEC = ToolSpec(
             },
             "needs_emotion": {
                 "type": "boolean",
-                "description": "True if they express stress, distress, or emotional burden.",
+                "description": "True if they express acute stress, distress, or emotional burden.",
+            },
+            "needs_peer": {
+                "type": "boolean",
+                "description": "True if they feel alone/isolated, misunderstood, doubt whether their experience is normal, or want to feel connected to others who understand.",
             },
             "needs_resources": {
                 "type": "boolean",
@@ -57,11 +62,12 @@ ROUTE_SPEC = ToolSpec(
 )
 
 ROUTE_SYSTEM = (
-    "You route messages from dementia caregivers in a support app. "
-    "Decide whether the latest message needs practical/educational guidance, "
-    "emotional support, and/or local resources (finding care, facilities, "
-    "services, or help — set needs_resources and extract a NJ county if named). "
-    "Record your decision by calling the route function."
+    "You route messages from dementia caregivers in a support app. Decide whether "
+    "the latest message needs practical/educational guidance (needs_education), "
+    "acute emotional support (needs_emotion), peer connection/normalization when "
+    "they feel alone or wonder if their experience is normal (needs_peer), and/or "
+    "local resources (needs_resources — finding care/facilities/services; extract a "
+    "NJ county if named). Record your decision by calling the route function."
 )
 
 # Shown between the Emotion and Education segments when both run.
@@ -75,6 +81,7 @@ class Coordinator:
         self._registry = AgentRegistry()
         self._registry.register(EducationAgent())
         self._registry.register(EmotionSupportAgent())
+        self._registry.register(PeerSupportAgent())
 
     def _route(self, ctx: AgentContext) -> dict:
         try:
@@ -92,11 +99,14 @@ class Coordinator:
         return {"primary": "education", "needs_education": True, "needs_emotion": False}
 
     def _build_plan(self, route: dict) -> list[str]:
-        """Ordered list of agent names. Empathy precedes facts; education is the
-        fallback so every turn produces an answer."""
+        """Ordered list of agent names. At most one supportive voice (acute
+        emotion takes priority over peer), then education as the fallback so every
+        turn produces an answer."""
         steps: list[str] = []
         if route.get("needs_emotion"):
             steps.append("emotion")
+        elif route.get("needs_peer"):
+            steps.append("peer")
         if route.get("needs_education") or not steps:
             steps.append("education")
         return steps
@@ -131,7 +141,9 @@ class Coordinator:
         for i, name in enumerate(plan):
             if i > 0:
                 yield ("delta", CONNECTOR)
-            # Tell later agents whether empathy was already delivered this turn.
-            ctx.flags["empathy_done"] = "emotion" in plan[:i]
+            # Tell later agents whether a supportive voice already spoke this turn.
+            ctx.flags["empathy_done"] = any(
+                a in plan[:i] for a in ("emotion", "peer")
+            )
             ctx.flags["needs_emotion"] = bool(route.get("needs_emotion"))
             yield from self._registry.get(name).stream(ctx)

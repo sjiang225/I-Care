@@ -513,6 +513,21 @@ button {
   padding: 3px 0;
 }
 
+/* ---- Peer Companion transparency label ---- */
+.peer-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #7c3aed;
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  padding: 4px 10px;
+  border-radius: 10px;
+}
+
 /* ---- Inline "well-being noted" chip ---- */
 .wb-noted {
   display: inline-flex;
