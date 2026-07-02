@@ -1,24 +1,29 @@
-"""Well-being API: read the caregiver's stress/emotion trend for a session.
+"""Well-being API: read the caregiver's stress/emotion trend.
 
-Powers the trend visualization (see docs/wellbeing-visualization.md). Data is
-written by the Emotion agent's log_wellbeing tool.
+Logged-in user -> their own trend (keyed by user). Guest -> by session_id.
 """
 from __future__ import annotations
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
-from ..db import get_db
+from ..db import User, get_db
+from .deps import current_user_optional
 
 router = APIRouter(prefix="/api", tags=["wellbeing"])
 
 
 @router.get("/wellbeing")
-def wellbeing(session_id: str = "default", limit: int = 30) -> dict:
+def wellbeing(
+    session_id: str = "default",
+    limit: int = 30,
+    user: User | None = Depends(current_user_optional),
+) -> dict:
     db = get_db()
-    asc = list(reversed(db.wellbeing_trend(session_id, limit)))  # oldest -> newest
-    summary = db.wellbeing_summary(session_id, limit)
+    key = f"u:{user.id}" if user is not None else session_id
+    asc = list(reversed(db.wellbeing_trend(key, limit)))  # oldest -> newest
+    summary = db.wellbeing_summary(key, limit)
     return {
-        "session_id": session_id,
+        "session_id": key,
         "points": [
             {
                 "ts": l.ts,

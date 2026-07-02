@@ -162,6 +162,130 @@ button {
   color: var(--brand-700);
 }
 
+/* Sign-in pill (header, guest) */
+.signin-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 20px;
+  color: var(--brand-700);
+  background: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: transform 0.1s ease;
+}
+.signin-btn:active {
+  transform: scale(0.95);
+}
+
+/* ---- Auth modal ---- */
+.auth-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(3px);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  z-index: 50;
+  animation: fadeInUp 0.2s ease both;
+}
+.auth-card {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  background: var(--surface);
+  border-radius: 22px;
+  padding: 26px 24px 20px;
+  box-shadow: var(--shadow-lg);
+}
+.auth-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  color: var(--muted);
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+}
+.auth-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+.auth-head h2 {
+  margin: 8px 0 0;
+  font-size: 1.3rem;
+  color: var(--ink);
+  font-weight: 800;
+}
+.auth-head p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.auth-input {
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  font-size: 1rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.auth-input:focus {
+  border-color: var(--brand-500);
+  box-shadow: 0 0 0 4px var(--brand-50);
+}
+.auth-error {
+  color: #dc2626;
+  font-size: 0.85rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+.auth-submit {
+  margin-top: 4px;
+  padding: 13px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--brand-600), var(--brand-500));
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+}
+.auth-submit:disabled {
+  opacity: 0.6;
+}
+.auth-switch {
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin-top: 16px;
+}
+.auth-switch button {
+  color: var(--brand-700);
+  font-weight: 600;
+}
+.auth-note {
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin: 12px 0 0;
+}
+
 /* ---- Messages ---- */
 .messages {
   flex: 1;

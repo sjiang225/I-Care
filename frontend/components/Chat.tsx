@@ -15,6 +15,8 @@ import {
   BookOpen,
   Users,
   SquarePen,
+  LogOut,
+  LogIn,
 } from "lucide-react";
 import {
   streamChat,
@@ -22,10 +24,17 @@ import {
   type Source,
   type ResourcesPayload,
 } from "@/lib/api";
+import {
+  me as fetchMe,
+  logout as doLogout,
+  getHistory,
+  type AuthUser,
+} from "@/lib/auth";
 import WellbeingView from "@/components/WellbeingView";
 import ResourceCard from "@/components/ResourceCard";
 import BrandMark from "@/components/BrandMark";
 import Markdown from "@/components/Markdown";
+import LoginRegister from "@/components/auth/LoginRegister";
 import {
   speechSupported,
   ttsSupported,
@@ -77,10 +86,13 @@ export default function Chat() {
   const [listening, setListening] = useState(false);
   const [readAloud, setReadAloud] = useState(false);
   const [view, setView] = useState<"chat" | "wellbeing">("chat");
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [authOpen, setAuthOpen] = useState(false);
 
   const dictationRef = useRef<Dictation | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const sessionIdRef = useRef<string>("");
+  const conversationIdRef = useRef<number | null>(null);
 
   useEffect(() => {
     let sid = localStorage.getItem("icare_session_id");
@@ -89,7 +101,43 @@ export default function Chat() {
       localStorage.setItem("icare_session_id", sid);
     }
     sessionIdRef.current = sid;
+    // Restore session if a valid token exists.
+    fetchMe().then((u) => {
+      if (u) {
+        setUser(u);
+        loadHistory();
+      }
+    });
   }, []);
+
+  async function loadHistory() {
+    const h = await getHistory();
+    conversationIdRef.current = h.latest_conversation_id;
+    if (h.latest_messages.length > 0) {
+      setMessages(
+        h.latest_messages.map((m) => ({
+          role: m.role as "user" | "assistant",
+          content: m.content,
+        }))
+      );
+    }
+  }
+
+  function onLoginSuccess(u: AuthUser) {
+    setUser(u);
+    setAuthOpen(false);
+    setMessages([]);
+    conversationIdRef.current = null;
+    loadHistory();
+  }
+
+  async function handleLogout() {
+    await doLogout();
+    setUser(null);
+    setMessages([]);
+    conversationIdRef.current = null;
+    setView("chat");
+  }
 
   // Detect browser speech support AFTER mount only (avoids hydration mismatch).
   const [canSpeechIn, setCanSpeechIn] = useState(false);
@@ -154,8 +202,12 @@ export default function Chat() {
             resources = r;
             paint();
           },
+          onMeta: (m) => {
+            conversationIdRef.current = m.conversation_id;
+          },
         },
-        sessionIdRef.current
+        sessionIdRef.current,
+        conversationIdRef.current
       );
       if (readAloud && full) speak(full);
     } catch {
@@ -204,6 +256,7 @@ export default function Chat() {
     stopDictation();
     setMessages([]);
     setInput("");
+    conversationIdRef.current = null; // next message starts a fresh conversation
     setView("chat");
   }
 
@@ -255,8 +308,33 @@ export default function Chat() {
               {readAloud ? <Volume2 size={20} /> : <VolumeX size={20} />}
             </button>
           )}
+          {user ? (
+            <button
+              className="ghost-btn"
+              onClick={handleLogout}
+              aria-label={`Sign out (${user.display_name})`}
+              title={`${user.display_name} · Sign out`}
+            >
+              <LogOut size={20} />
+            </button>
+          ) : (
+            <button
+              className="signin-btn"
+              onClick={() => setAuthOpen(true)}
+              title="Sign in or create an account"
+            >
+              <LogIn size={16} /> Sign in
+            </button>
+          )}
         </div>
       </header>
+
+      {authOpen && (
+        <LoginRegister
+          onSuccess={onLoginSuccess}
+          onClose={() => setAuthOpen(false)}
+        />
+      )}
 
       <div className="messages" ref={scrollRef}>
         {messages.length === 0 && (

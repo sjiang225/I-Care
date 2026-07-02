@@ -1,5 +1,7 @@
 // Streaming chat client: POSTs to /api/chat and parses the SSE response.
 
+import { authHeaders } from "./auth";
+
 export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
@@ -39,6 +41,7 @@ export interface StreamHandlers {
   onSources?: (sources: Source[]) => void;
   onSignal?: (signal: Record<string, unknown>) => void;
   onResources?: (resources: ResourcesPayload) => void;
+  onMeta?: (meta: { conversation_id: number }) => void;
 }
 
 export interface WellbeingPoint {
@@ -62,7 +65,8 @@ export interface WellbeingData {
 
 export async function getWellbeing(sessionId: string): Promise<WellbeingData> {
   const res = await fetch(
-    `/api/wellbeing?session_id=${encodeURIComponent(sessionId)}`
+    `/api/wellbeing?session_id=${encodeURIComponent(sessionId)}`,
+    { headers: authHeaders() }
   );
   if (!res.ok) throw new Error(`Wellbeing request failed: ${res.status}`);
   return res.json();
@@ -73,12 +77,17 @@ export async function streamChat(
   messages: ChatMessage[],
   handlers: StreamHandlers,
   sessionId: string,
+  conversationId: number | null,
   signal?: AbortSignal
 ): Promise<void> {
   const res = await fetch("/api/chat", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ messages, session_id: sessionId }),
+    headers: { "Content-Type": "application/json", ...authHeaders() },
+    body: JSON.stringify({
+      messages,
+      session_id: sessionId,
+      conversation_id: conversationId,
+    }),
     signal,
   });
 
@@ -112,6 +121,7 @@ export async function streamChat(
       else if (event === "sources") handlers.onSources?.(parsed.sources ?? []);
       else if (event === "resources") handlers.onResources?.(parsed);
       else if (event === "signal") handlers.onSignal?.(parsed);
+      else if (event === "meta") handlers.onMeta?.(parsed);
       else if (event === "error") throw new Error(parsed.message ?? "stream error");
     }
   }

@@ -34,6 +34,20 @@ class WellbeingSummary:
     top_emotions: list[tuple[str, int]]
 
 
+@dataclass
+class User:
+    id: int
+    email: str
+    display_name: str
+
+
+@dataclass
+class MessageRow:
+    role: str
+    content: str
+    ts: float
+
+
 class Database:
     def __init__(self, path: str) -> None:
         Path(path).parent.mkdir(parents=True, exist_ok=True)
@@ -57,7 +71,127 @@ class Database:
         self._conn.execute(
             "CREATE INDEX IF NOT EXISTS idx_wb_session ON wellbeing_logs(session_id)"
         )
+        self._conn.executescript(
+            """
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                email TEXT UNIQUE NOT NULL,
+                password_hash TEXT NOT NULL,
+                salt TEXT NOT NULL,
+                display_name TEXT NOT NULL,
+                created_at REAL NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS auth_tokens (
+                token TEXT PRIMARY KEY,
+                user_id INTEGER NOT NULL,
+                created_at REAL NOT NULL,
+                expires_at REAL NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS conversations (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                created_at REAL NOT NULL,
+                title TEXT
+            );
+            CREATE TABLE IF NOT EXISTS messages (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                conversation_id INTEGER NOT NULL,
+                user_id INTEGER NOT NULL,
+                role TEXT NOT NULL,
+                content TEXT NOT NULL,
+                created_at REAL NOT NULL
+            );
+            CREATE INDEX IF NOT EXISTS idx_conv_user ON conversations(user_id);
+            CREATE INDEX IF NOT EXISTS idx_msg_conv ON messages(conversation_id);
+            """
+        )
         self._conn.commit()
+
+    # ---- Users & auth ----
+
+    def create_user(
+        self, email: str, password_hash: str, salt: str, display_name: str
+    ) -> "User":
+        cur = self._conn.execute(
+            "INSERT INTO users (email, password_hash, salt, display_name, created_at)"
+            " VALUES (?, ?, ?, ?, ?)",
+            (email.lower(), password_hash, salt, display_name, time.time()),
+        )
+        self._conn.commit()
+        return User(id=cur.lastrowid, email=email.lower(), display_name=display_name)
+
+    def get_user_auth(self, email: str) -> dict | None:
+        row = self._conn.execute(
+            "SELECT id, email, display_name, password_hash, salt FROM users"
+            " WHERE email = ?",
+            (email.lower(),),
+        ).fetchone()
+        if not row:
+            return None
+        return {
+            "id": row[0],
+            "email": row[1],
+            "display_name": row[2],
+            "password_hash": row[3],
+            "salt": row[4],
+        }
+
+    def create_token(self, user_id: int, token: str, ttl_days: int = 30) -> None:
+        now = time.time()
+        self._conn.execute(
+            "INSERT INTO auth_tokens (token, user_id, created_at, expires_at)"
+            " VALUES (?, ?, ?, ?)",
+            (token, user_id, now, now + ttl_days * 86400),
+        )
+        self._conn.commit()
+
+    def user_for_token(self, token: str) -> "User | None":
+        row = self._conn.execute(
+            "SELECT u.id, u.email, u.display_name FROM auth_tokens t"
+            " JOIN users u ON u.id = t.user_id"
+            " WHERE t.token = ? AND t.expires_at > ?",
+            (token, time.time()),
+        ).fetchone()
+        return User(id=row[0], email=row[1], display_name=row[2]) if row else None
+
+    def delete_token(self, token: str) -> None:
+        self._conn.execute("DELETE FROM auth_tokens WHERE token = ?", (token,))
+        self._conn.commit()
+
+    # ---- Conversations & messages ----
+
+    def create_conversation(self, user_id: int, title: str = "") -> int:
+        cur = self._conn.execute(
+            "INSERT INTO conversations (user_id, created_at, title) VALUES (?, ?, ?)",
+            (user_id, time.time(), title),
+        )
+        self._conn.commit()
+        return cur.lastrowid
+
+    def latest_conversation(self, user_id: int) -> int | None:
+        row = self._conn.execute(
+            "SELECT id FROM conversations WHERE user_id = ? ORDER BY id DESC LIMIT 1",
+            (user_id,),
+        ).fetchone()
+        return row[0] if row else None
+
+    def add_message(
+        self, conversation_id: int, user_id: int, role: str, content: str
+    ) -> None:
+        self._conn.execute(
+            "INSERT INTO messages (conversation_id, user_id, role, content, created_at)"
+            " VALUES (?, ?, ?, ?, ?)",
+            (conversation_id, user_id, role, content, time.time()),
+        )
+        self._conn.commit()
+
+    def conversation_messages(self, conversation_id: int) -> list["MessageRow"]:
+        rows = self._conn.execute(
+            "SELECT role, content, created_at FROM messages"
+            " WHERE conversation_id = ? ORDER BY id ASC",
+            (conversation_id,),
+        ).fetchall()
+        return [MessageRow(role=r[0], content=r[1], ts=r[2]) for r in rows]
 
     def add_wellbeing(
         self, session_id: str, stress_level: int, emotions: list[str], note: str = ""
