@@ -1,26 +1,26 @@
 /* =========================================================================
-   I-Care design system — a calm, professional healthcare companion UI.
+   I-Care design system — Rutgers-aligned, warm healthcare companion UI.
    ========================================================================= */
 
 :root {
-  /* Brand (calming teal) */
-  --brand-700: #0f766e;
-  --brand-600: #0d9488;
-  --brand-500: #14b8a6;
-  --brand-100: #ccfbf1;
-  --brand-50: #f0fdfa;
+  /* Rutgers brand: Pantone 186 red with an official dark-red companion. */
+  --brand-700: #8e0d18;
+  --brand-600: #cc0033;
+  --brand-500: #cc0033;
+  --brand-100: #f3c2ce;
+  --brand-50: #fff2f5;
   /* Warmth accent (used sparingly for empathy/care) */
   --rose-500: #f43f5e;
   --amber-50: #fffbeb;
   --amber-200: #fde68a;
   --amber-700: #b45309;
   /* Neutrals */
-  --ink: #0f172a;
-  --text: #334155;
-  --muted: #64748b;
-  --line: #e7ecf2;
+  --ink: #222222;
+  --text: #333333;
+  --muted: #666666;
+  --line: #d8d8d8;
   --surface: #ffffff;
-  --bg: #eef2f7;
+  --bg: #efefef;
 
   --radius: 16px;
   --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);

@@ -54,28 +54,23 @@ type UiMessage = ChatMessage & {
 const SUGGESTED = [
   {
     icon: Brain,
-    label: "Managing difficult behaviors",
-    text: "How do I handle challenging behaviors like agitation or aggression?",
-  },
-  {
-    icon: Heart,
-    label: "I'm feeling overwhelmed",
-    text: "I feel overwhelmed and exhausted as a caregiver.",
+    label: "Managing challenging behaviors",
+    text: "How can I manage challenging behaviors such as agitation or aggression?",
   },
   {
     icon: Moon,
     label: "Sleep problems",
-    text: "My loved one is up all night. What can I do?",
+    text: "My loved one has trouble sleeping at night. What can I do?",
   },
   {
     icon: MapPin,
-    label: "Find local care in NJ",
-    text: "How do I find memory care near me in New Jersey?",
+    label: "Find care options",
+    text: "What care options are available for my loved one in New Jersey?",
   },
   {
     icon: Users,
-    label: "Talk to someone who gets it",
-    text: "I feel like no one understands what I'm going through.",
+    label: "Need someone to talk to",
+    text: "I'm feeling overwhelmed and need someone to talk to.",
   },
 ];
 
