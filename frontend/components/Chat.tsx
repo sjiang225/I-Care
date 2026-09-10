@@ -17,6 +17,7 @@ import {
   SquarePen,
   LogOut,
   LogIn,
+  ChevronRight,
 } from "lucide-react";
 import {
   streamChat,
@@ -55,21 +56,25 @@ const SUGGESTED = [
   {
     icon: Brain,
     label: "Managing challenging behaviors",
+    description: "Practical strategies for difficult moments.",
     text: "How can I manage challenging behaviors such as agitation or aggression?",
   },
   {
     icon: Moon,
     label: "Sleep problems",
+    description: "Ideas for safer, calmer nights.",
     text: "My loved one has trouble sleeping at night. What can I do?",
   },
   {
     icon: MapPin,
     label: "Find care options",
+    description: "Explore support resources in New Jersey.",
     text: "What care options are available for my loved one in New Jersey?",
   },
   {
     icon: Users,
     label: "Need someone to talk to",
+    description: "Share what you're carrying.",
     text: "I'm feeling overwhelmed and need someone to talk to.",
   },
 ];
@@ -268,10 +273,11 @@ export default function Chat() {
     <div className="app">
       <header className="header">
         <BrandMark size={42} />
-        <div>
+        <div className="brand-copy">
           <h1>I-Care</h1>
-          <div className="status">
-            <span className="status-dot" /> Online · Caregiver Companion
+          <div className="status" aria-label="I-Care is online">
+            <span className="status-dot" />
+            <span>Online · Caregiver Companion</span>
           </div>
         </div>
         <div className="header-actions">
@@ -331,14 +337,20 @@ export default function Chat() {
         />
       )}
 
-      <div className="messages" ref={scrollRef}>
+      <div
+        className={`messages${messages.length === 0 ? " welcome-mode" : ""}`}
+        ref={scrollRef}
+      >
         {messages.length === 0 && (
           <div className="welcome">
-            <BrandMark large />
-            <h2>Hi, I&apos;m I-Care</h2>
-            <p>
-              Your companion for dementia caregiving. Ask me anything — about
-              behaviors, daily care, local resources, or how you&apos;re feeling.
+            <div className="welcome-mark">
+              <BrandMark large />
+            </div>
+            <div className="welcome-eyebrow">Dementia caregiver support</div>
+            <h2>How can I support you today?</h2>
+            <p className="welcome-intro">
+              Practical guidance and compassionate support for dementia
+              caregivers, whenever you need it.
             </p>
             <div className="prompt-chips">
               {SUGGESTED.map((s) => (
@@ -346,11 +358,29 @@ export default function Chat() {
                   key={s.label}
                   className="prompt-chip"
                   onClick={() => submit(s.text)}
+                  type="button"
                 >
-                  <s.icon size={17} />
-                  {s.label}
+                  <span className="prompt-icon">
+                    <s.icon size={21} />
+                  </span>
+                  <span className="prompt-copy">
+                    <strong>{s.label}</strong>
+                    <span>{s.description}</span>
+                  </span>
+                  <ChevronRight className="prompt-arrow" size={18} />
                 </button>
               ))}
+            </div>
+            <div className="trust-strip" aria-label="I-Care support areas">
+              <span>
+                <BookOpen size={14} /> Care2Caregivers-informed guidance
+              </span>
+              <span>
+                <HeartHandshake size={14} /> Compassionate support
+              </span>
+              <span>
+                <MapPin size={14} /> New Jersey resources
+              </span>
             </div>
           </div>
         )}
@@ -434,7 +464,7 @@ export default function Chat() {
           )}
           <textarea
             rows={1}
-            placeholder="Type or speak your question…"
+            placeholder="Ask I-Care about caregiving…"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {

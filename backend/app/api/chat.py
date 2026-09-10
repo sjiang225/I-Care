@@ -95,4 +95,15 @@ def chat(
             if user is not None and conversation_id is not None and full:
                 db.add_message(conversation_id, user.id, "assistant", full)
 
-    return StreamingResponse(event_stream(), media_type="text/event-stream")
+    # SSE must remain an uncompressed, unbuffered byte stream. In particular,
+    # ngrok may otherwise gzip the response requested by browsers and buffer or
+    # drop the event chunks before the frontend can parse them.
+    return StreamingResponse(
+        event_stream(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache, no-transform",
+            "Content-Encoding": "identity",
+            "X-Accel-Buffering": "no",
+        },
+    )
