@@ -19,9 +19,10 @@ from ..kb.retrieve import retrieve
 from ..llm.base import Message
 from ..llm.factory import get_llm
 from .base import AgentContext, AgentEvent
-from .wellbeing_logging import assess_and_log_wellbeing
+from .style import CARE_RECIPIENT_TERMS, CAREGIVER_VOICE, safety_instruction
 
-PEER_SYSTEM = """You are the Peer Companion in I-Care — a warm AI companion that \
+PEER_SYSTEM = (
+    """You are the Peer Companion in I-Care — a warm AI companion that \
 reflects the shared experiences of family caregivers of people with dementia.
 
 Your role is CONNECTION and NORMALIZATION, not clinical advice:
@@ -37,9 +38,14 @@ on the notes below — weave in naturally, no [n] citations).
 - Keep it brief and human. If they mention self-harm or crisis, urge them to call \
 or text 988 right away. Real peer supporters are also at Care2Caregivers: \
 1-800-424-2494.
+"""
+    + CAREGIVER_VOICE
+    + CARE_RECIPIENT_TERMS
+    + """
 
 Background notes (self-care, for your reference only):
 {context}"""
+)
 
 
 class PeerSupportAgent:
@@ -49,18 +55,12 @@ class PeerSupportAgent:
         self._history_turns = history_turns
 
     def stream(self, ctx: AgentContext) -> Iterator[AgentEvent]:
-        # Peer chats are emotional too -> track well-being (shared helper).
-        logged = assess_and_log_wellbeing(ctx, self._history_turns)
-        if logged:
-            yield ("signal", {"wellbeing": logged})
         # Tell the UI to badge this turn as a transparent peer interaction.
         yield ("signal", {"agent": "peer"})
 
         hits = retrieve(ctx.last_user_text(), k=3)
         context = "\n\n".join(h.text for h in hits)
-        system_content = PEER_SYSTEM.format(context=context)
-        if ctx.flags.get("caregiver_state"):
-            system_content += "\n\n" + ctx.flags["caregiver_state"]
+        system_content = safety_instruction(ctx.flags) + PEER_SYSTEM.format(context=context)
 
         prompt = [Message(role="system", content=system_content), *ctx.recent(self._history_turns)]
         for delta in get_llm().stream_chat(prompt, temperature=0.75):

@@ -19,12 +19,15 @@ class Settings(BaseSettings):
     openai_base_url: str = "https://api.openai.com/v1"
     openai_chat_model: str = "gpt-4o-mini"
     openai_embed_model: str = "text-embedding-3-small"
+    # Thinking level for reasoning models, e.g. Gemini via its OpenAI-compatible
+    # endpoint ("none" / "low" / ...). Empty = do not send (gpt-4o-mini rejects it).
+    openai_reasoning_effort: str = ""
 
     # Knowledge base (RAG)
     kb_db_path: str = "data/kb.sqlite3"
     rag_top_k: int = 4
 
-    # Application database (sessions, well-being logs)
+    # Application database (accounts, conversations, retained legacy records)
     app_db_path: str = "data/app.sqlite3"
 
     # Server

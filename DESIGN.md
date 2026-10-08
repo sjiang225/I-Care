@@ -1,5 +1,7 @@
 # I-Care 技术设计方案（Web / PWA 版）
 
+> **2026-09-28 更新：** 本文件保留早期架构与路线。自动情绪推断记录、旧图表和压力反馈已停用；已新增主动填写的 PHQ-9、GAD-7、PSS-10 自评，独立保存且不供聊天 AI 读取。当前变更见 [升级第 1 步](docs/upgrade-step-1.md) 和 [自评实现说明](docs/self-assessment.md)。
+
 > Development of an Intelligence Care (I-Care) Program for Dementia Caregivers
 > ©2026 Rutgers, The State University of New Jersey, All rights reserved.
 

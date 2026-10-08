@@ -19,6 +19,8 @@ export interface Helpline {
   phone: string;
   url: string;
   description: string;
+  hours?: string | null;
+  after_hours?: string | null;
 }
 export interface Facility {
   name: string;
@@ -42,34 +44,6 @@ export interface StreamHandlers {
   onSignal?: (signal: Record<string, unknown>) => void;
   onResources?: (resources: ResourcesPayload) => void;
   onMeta?: (meta: { conversation_id: number }) => void;
-}
-
-export interface WellbeingPoint {
-  ts: number;
-  stress_level: number;
-  emotions: string[];
-  note: string;
-}
-
-export interface WellbeingData {
-  session_id: string;
-  points: WellbeingPoint[];
-  summary: {
-    count: number;
-    avg_stress: number;
-    latest_stress: number | null;
-    trend: "up" | "down" | "steady";
-    top_emotions: [string, number][];
-  };
-}
-
-export async function getWellbeing(sessionId: string): Promise<WellbeingData> {
-  const res = await fetch(
-    `/api/wellbeing?session_id=${encodeURIComponent(sessionId)}`,
-    { headers: authHeaders() }
-  );
-  if (!res.ok) throw new Error(`Wellbeing request failed: ${res.status}`);
-  return res.json();
 }
 
 // Streams assistant text deltas + sources; resolves when the stream ends.

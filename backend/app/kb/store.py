@@ -64,6 +64,17 @@ class LocalVectorStore:
             )
             """
         )
+        # Records which embedding model produced the vectors, so a query is never
+        # compared against vectors from a different model.
+        self._conn.execute("CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT NOT NULL)")
+        self._conn.commit()
+
+    def get_meta(self, key: str) -> str | None:
+        row = self._conn.execute("SELECT value FROM meta WHERE key = ?", (key,)).fetchone()
+        return row[0] if row else None
+
+    def set_meta(self, key: str, value: str) -> None:
+        self._conn.execute("INSERT OR REPLACE INTO meta (key, value) VALUES (?, ?)", (key, value))
         self._conn.commit()
 
     def reset(self) -> None:

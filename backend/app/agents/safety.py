@@ -36,6 +36,21 @@ _MISSING = [
     "ran away", "left the house and",
 ]
 
+# R09: the caregiver (or the person they support) is at risk of harm -- e.g.
+# aggression from the person living with dementia. Phrases are specific on
+# purpose: "it hurt me when she forgot my name" must not trigger.
+_CAREGIVER_DANGER = [
+    "hit me", "hits me", "hitting me", "punched me", "kicked me", "choked me",
+    "attacked me", "attacks me", "slapped me", "bit me", "shoved me",
+    "threatened me", "threatens me", "threatening me", "threatened to kill",
+    "has a knife", "has a gun", "afraid of him", "afraid of her",
+    "scared of him", "scared of her", "i'm not safe", "i am not safe",
+    "don't feel safe", "do not feel safe", "fear for my safety",
+    "afraid for my safety", "fear for his safety", "fear for her safety",
+    "i'm in danger", "i am in danger", "he's in danger", "she's in danger",
+    "we're in danger", "we are in danger",
+]
+
 _HELPLINE = "Care2Caregivers helpline: 1-800-424-2494"
 
 
@@ -74,9 +89,20 @@ def check_safety(text: str) -> SafetyResult:
             triggered=True,
             category="missing_person",
             message=(
-                "🚨 If your loved one is missing, call **911** now — police can "
+                "🚨 If the person you care for is missing, call **911** now — police can "
                 "begin a search immediately, and time matters with dementia. "
                 "Have a recent photo and description ready.\n\n"
+            ),
+        )
+
+    if _matches(t, _CAREGIVER_DANGER):
+        return SafetyResult(
+            triggered=True,
+            category="caregiver_safety",
+            message=(
+                "🚨 If you ever feel in danger or fear for the safety of the person "
+                "you are supporting, call **911**. Emergency workers can assist you "
+                "and help you in a crisis.\n\n"
             ),
         )
 

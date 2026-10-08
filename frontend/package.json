@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "test": "node --test tests/*.test.mjs",
     "lint": "next lint"
   },
   "dependencies": {
@@ -14,7 +15,6 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-markdown": "^10.1.0",
-    "recharts": "^3.9.1",
     "remark-gfm": "^4.0.1"
   },
   "devDependencies": {

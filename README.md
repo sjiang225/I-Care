@@ -11,7 +11,7 @@ See [DESIGN.md](DESIGN.md) for the full architecture and roadmap.
 
 ---
 
-## What's built so far (M0 — scaffold)
+## Current features
 
 - **Backend** (`backend/`): FastAPI with a streaming `/api/chat` endpoint and an
   LLM provider abstraction. Runs with a built-in **mock** provider, so it works
@@ -20,9 +20,37 @@ See [DESIGN.md](DESIGN.md) for the full architecture and roadmap.
 - **Frontend** (`frontend/`): Next.js PWA, mobile-first chat UI with voice input
   + read-aloud (Web Speech API), large-font / high-contrast layout for older
   caregivers, and the required Rutgers copyright + medical disclaimer footer.
+- **Caregiver support**: Care2Caregivers knowledge retrieval and citations,
+  coordinated education/emotional-support/peer-companion agents, safety notices,
+  and NJ resources and related videos.
+- **Accounts**: optional registration/sign-in and restoration of the latest
+  saved conversation; guests can chat without an account.
+- **Home and navigation**: persistent, labeled Home / Chat / Library / Self-assessment
+  navigation; a dedicated homepage with a clear start/continue action, topic
+  suggestions and an illustrated first-use guide. Switching pages preserves the
+  conversation, draft and unfinished questionnaire in the open page. See
+  [R01 implementation notes](docs/home-navigation.md).
+- **How to use I-Care**: a voluntary four-step picture guide available from Home
+  and the labeled Help button on every page, plus two-step tutorials for Library
+  and Self-assessment. Closing Help returns to the current page with work intact.
+  See [R03 implementation notes](docs/illustrated-help-guide.md).
+- **Educational resources**: browse 25 English PDF guides and 12 videos across
+  11 topics, filter All / Guides / Videos and search titles, topics or languages
+  without asking a question. Videos are labeled English, Spanish or Russian and
+  open on YouTube. Inline citation numbers open the matching source for that answer;
+  new saved answers retain sources when restored. See [R02 / R10 notes](docs/guide-library-and-citations.md).
+- **Self-assessment**: voluntary PHQ-9, GAD-7 and PSS-10 questionnaires with
+  deterministic scoring, non-diagnostic explanations and support links.
+  Guest results are not stored; signed-in submissions are saved separately
+  from chat and visible only to their owner. See [implementation notes](docs/self-assessment.md).
 
-Not yet built: RAG knowledge base, the Coordinator/Education/Emotion agents,
-emotion tracking, usability-test instrumentation (M1–M5 in DESIGN.md).
+**September 2026 upgrade, step 1:** automatic stress/emotion scoring, its chart,
+and history-based feedback have been retired. Emotional support remains
+available. Legacy records are retained in the database but are no longer read,
+written, or exposed by the application; `/api/wellbeing` returns `410 Gone`.
+Voluntary questionnaire-based self-assessment has now been added using the
+team's supplied instruments. See [step 1 implementation notes](docs/upgrade-step-1.md)
+and [self-assessment details](docs/self-assessment.md).
 
 ---
 
@@ -50,6 +78,19 @@ npm run dev
 
 Open http://localhost:3000. On a phone, use Safari/Chrome → "Add to Home Screen"
 to install it like an app.
+
+## Regression checks
+
+The backend tests use temporary synthetic data and a deterministic local model;
+they do not use the existing application database or make model API calls.
+
+```bash
+cd backend
+./.venv/bin/python -m unittest discover -s tests -v
+```
+
+For frontend checks, run `npm test`, `npx tsc --noEmit --incremental false` and `npm run build`
+from `frontend/`.
 
 ---
 

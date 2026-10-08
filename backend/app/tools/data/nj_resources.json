@@ -1,6 +1,6 @@
 {
   "validation": "pending_advisory_review",
-  "note": "Only high-confidence, widely-published phone numbers are included. NJ state-agency contacts (Division of Aging Services / county Area Agencies on Aging) to be added after advisory/clinical review. Do NOT add unverified numbers.",
+  "note": "Only high-confidence, widely-published phone numbers are included. NJ state-agency contacts (Division of Aging Services / county Area Agencies on Aging) to be added after advisory/clinical review. Do NOT add unverified numbers. Service hours were checked against each provider's published information on 2026-09-29; recheck before release (holiday schedules are not listed).",
   "resources": [
     {
       "name": "Care2Caregivers Helpline",
@@ -8,7 +8,10 @@
       "url": "https://care2caregivers.com",
       "category": "helpline",
       "statewide": true,
-      "description": "Rutgers Health peer-support helpline for NJ dementia caregivers, staffed by trained peers."
+      "description": "Rutgers Health peer-support helpline for NJ dementia caregivers, staffed by trained peers.",
+      "hours": "Mon–Fri, 8:30 am–4:30 pm ET",
+      "after_hours": "Outside these hours you may need to leave a message, and website chat may not be staffed.",
+      "hours_source": "NJ 211 listing (search.nj211.org) and team meeting 2026-09-11; checked 2026-09-29"
     },
     {
       "name": "Alzheimer's Association 24/7 Helpline",
@@ -16,7 +19,10 @@
       "url": "https://www.alz.org/help-support/resources/helpline",
       "category": "helpline",
       "statewide": true,
-      "description": "Free 24/7 helpline for information, referrals, and support on Alzheimer's and dementia."
+      "description": "Free 24/7 helpline for information, referrals, and support on Alzheimer's and dementia.",
+      "hours": "24 hours a day, every day of the year",
+      "after_hours": null,
+      "hours_source": "alz.org/help-support/resources/helpline; checked 2026-09-29"
     },
     {
       "name": "Eldercare Locator",
@@ -24,7 +30,10 @@
       "url": "https://eldercare.acl.gov",
       "category": "referral",
       "statewide": true,
-      "description": "U.S. Administration on Aging service that connects you to local Area Agencies on Aging and services by ZIP code."
+      "description": "U.S. Administration on Aging service that connects you to local Area Agencies on Aging and services by ZIP code.",
+      "hours": "Mon–Fri, 8 am–9 pm ET",
+      "after_hours": "Live chat with a specialist is also available on the website during these hours.",
+      "hours_source": "acl.gov / eldercare.acl.gov; checked 2026-09-29"
     },
     {
       "name": "988 Suicide & Crisis Lifeline",
@@ -32,7 +41,10 @@
       "url": "https://988lifeline.org",
       "category": "crisis",
       "statewide": true,
-      "description": "Free, confidential crisis support 24/7 (call or text 988) for anyone in emotional distress."
+      "description": "Free, confidential crisis support 24/7 (call or text 988) for anyone in emotional distress.",
+      "hours": "24 hours a day, every day — call, text or chat online",
+      "after_hours": null,
+      "hours_source": "988lifeline.org; checked 2026-09-29"
     },
     {
       "name": "CareNewJersey — NJ Eldercare Resources Directory",
@@ -40,7 +52,10 @@
       "url": "https://www.carenewjersey.org/a4_new_jersey_resources.htm",
       "category": "referral",
       "statewide": true,
-      "description": "New Jersey eldercare resources directory and referral line for finding local senior-care services."
+      "description": "New Jersey eldercare resources directory and referral line for finding local senior-care services.",
+      "hours": null,
+      "after_hours": null,
+      "hours_source": "Hours not published on the provider's website (checked 2026-09-29); needs team review."
     }
   ]
 }

@@ -4,7 +4,7 @@ For each turn:
   1. Safety guardrail -> if it fires, surface an urgent notice first.
   2. Route the message (needs_education / needs_emotion) via a structured tool call.
   3. Build an ordered Plan of specialist agents and execute them sequentially,
-     streaming throughout. When both are needed: Emotion (empathy + log) first,
+     streaming throughout. When both are needed: Emotion (support) first,
      then a connector, then Education (grounded answer with citations).
 
 See docs/agent-orchestration.md for the design + rationale.
@@ -13,7 +13,6 @@ from __future__ import annotations
 
 from typing import Iterator
 
-from ..db import get_db
 from ..llm.base import Message, ToolSpec
 from ..llm.factory import get_llm
 from ..tools import resources as resources_tool
@@ -23,7 +22,6 @@ from .emotion import EmotionSupportAgent
 from .peer import PeerSupportAgent
 from .registry import AgentRegistry
 from .safety import check_safety
-from .state import assess_caregiver_state
 
 ROUTE_SPEC = ToolSpec(
     name="route",
@@ -37,7 +35,7 @@ ROUTE_SPEC = ToolSpec(
             },
             "needs_emotion": {
                 "type": "boolean",
-                "description": "True if they express acute stress, distress, or emotional burden.",
+                "description": "True only if the caregiver describes their OWN feelings in their own words (e.g. 'I feel guilty', 'I'm exhausted', 'I'm losing my patience'). Asking about a hard topic, a behaviour, or where to find services is NOT enough.",
             },
             "needs_peer": {
                 "type": "boolean",
@@ -64,7 +62,8 @@ ROUTE_SPEC = ToolSpec(
 ROUTE_SYSTEM = (
     "You route messages from dementia caregivers in a support app. Decide whether "
     "the latest message needs practical/educational guidance (needs_education), "
-    "acute emotional support (needs_emotion), peer connection/normalization when "
+    "emotional support (needs_emotion: only when they state their own feelings; "
+    "never infer feelings from the topic of a question), peer connection/normalization when "
     "they feel alone or wonder if their experience is normal (needs_peer), and/or "
     "local resources (needs_resources — finding care/facilities/services; extract a "
     "NJ county if named). Record your decision by calling the route function."
@@ -116,6 +115,8 @@ class Coordinator:
         if safety.triggered:
             yield ("signal", {"safety": safety.category})
             yield ("delta", safety.message or "")
+            # Downstream agents lead with safety steps rather than thanks or praise.
+            ctx.flags["safety"] = safety.category
 
         route = self._route(ctx)
 
@@ -126,15 +127,7 @@ class Coordinator:
                 county=route.get("county")
             )
 
-        # Well-being feedback loop: if the stored trend shows high/rising stress,
-        # adopt a warmer posture and surface self-care support (no extra LLM call).
-        state = assess_caregiver_state(get_db().wellbeing_summary(ctx.session_id))
-        if state.high_stress:
-            ctx.flags["high_stress"] = True
-            ctx.flags["caregiver_state"] = state.note
-            ctx.flags["extra_video_category"] = "caregiver_selfcare"
-            ctx.flags.setdefault("resources", resources_tool.get_local_resources())
-
+        # Support is based on the conversation, never on legacy inferred scores.
         plan = self._build_plan(route)
         yield ("signal", {"plan": plan})
 

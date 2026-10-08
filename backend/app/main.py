@@ -5,8 +5,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .api.auth import router as auth_router
+from .api.assessments import router as assessments_router
 from .api.chat import router as chat_router
 from .api.history import router as history_router
+from .api.library import router as library_router
 from .api.wellbeing import router as wellbeing_router
 from .config import get_settings
 
@@ -23,9 +25,11 @@ app.add_middleware(
 )
 
 app.include_router(auth_router)
+app.include_router(assessments_router)
 app.include_router(chat_router)
 app.include_router(wellbeing_router)
 app.include_router(history_router)
+app.include_router(library_router)
 
 
 @app.get("/health")

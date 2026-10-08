@@ -1,23 +1,22 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   HeartHandshake,
-  LineChart,
   Volume2,
   VolumeX,
   Mic,
   ArrowUp,
-  Brain,
-  Heart,
-  Moon,
-  MapPin,
   BookOpen,
-  Users,
-  SquarePen,
+  House,
   LogOut,
   LogIn,
-  ChevronRight,
+  MessageCircle,
+  SquarePen,
+  ClipboardCheck,
+  CircleHelp,
+  Smartphone,
+  Monitor,
 } from "lucide-react";
 import {
   streamChat,
@@ -31,11 +30,15 @@ import {
   getHistory,
   type AuthUser,
 } from "@/lib/auth";
-import WellbeingView from "@/components/WellbeingView";
 import ResourceCard from "@/components/ResourceCard";
 import BrandMark from "@/components/BrandMark";
 import Markdown from "@/components/Markdown";
 import LoginRegister from "@/components/auth/LoginRegister";
+import SelfAssessment from "@/components/SelfAssessment";
+import HomeView from "@/components/HomeView";
+import GuideLibrary from "@/components/GuideLibrary";
+import HelpGuide from "@/components/HelpGuide";
+import { sourceHref } from "@/lib/citations";
 import {
   speechSupported,
   ttsSupported,
@@ -47,37 +50,19 @@ import {
 
 type UiMessage = ChatMessage & {
   sources?: Source[];
-  wellbeingLogged?: boolean;
   resources?: ResourcesPayload;
   peer?: boolean;
 };
 
-const SUGGESTED = [
-  {
-    icon: Brain,
-    label: "Managing challenging behaviors",
-    description: "Practical strategies for difficult moments.",
-    text: "How can I manage challenging behaviors such as agitation or aggression?",
-  },
-  {
-    icon: Moon,
-    label: "Sleep problems",
-    description: "Ideas for safer, calmer nights.",
-    text: "My loved one has trouble sleeping at night. What can I do?",
-  },
-  {
-    icon: MapPin,
-    label: "Find care options",
-    description: "Explore support resources in New Jersey.",
-    text: "What care options are available for my loved one in New Jersey?",
-  },
-  {
-    icon: Users,
-    label: "Need someone to talk to",
-    description: "Share what you're carrying.",
-    text: "I'm feeling overwhelmed and need someone to talk to.",
-  },
-];
+type View = "home" | "chat" | "library" | "self-assessment";
+const FRAME_KEY = "icare:app-frame";
+
+const NAVIGATION = [
+  { id: "home", label: "Home", icon: House },
+  { id: "chat", label: "Chat", icon: MessageCircle },
+  { id: "library", label: "Library", icon: BookOpen },
+  { id: "self-assessment", label: "Self-assessment", icon: ClipboardCheck },
+] as const;
 
 export default function Chat() {
   const [messages, setMessages] = useState<UiMessage[]>([]);
@@ -85,14 +70,99 @@ export default function Chat() {
   const [sending, setSending] = useState(false);
   const [listening, setListening] = useState(false);
   const [readAloud, setReadAloud] = useState(false);
-  const [view, setView] = useState<"chat" | "wellbeing">("chat");
   const [user, setUser] = useState<AuthUser | null>(null);
   const [authOpen, setAuthOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
+  const [view, setView] = useState<View>("home");
+  const [assessmentVisited, setAssessmentVisited] = useState(false);
+  const [libraryVisited, setLibraryVisited] = useState(false);
+  const [resetRequested, setResetRequested] = useState(false);
+  const [topicSuggestion, setTopicSuggestion] = useState<string | null>(null);
+  const [appFrame, setAppFrame] = useState(false);
 
   const dictationRef = useRef<Dictation | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const sessionIdRef = useRef<string>("");
   const conversationIdRef = useRef<number | null>(null);
+  const viewRef = useRef<View>("home");
+  const homeRef = useRef<HTMLElement>(null);
+  const chatHeadingRef = useRef<HTMLHeadingElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const newChatRef = useRef<HTMLButtonElement>(null);
+  const cancelResetRef = useRef<HTMLButtonElement>(null);
+  const focusInputRef = useRef(false);
+  const homeScrollRef = useRef(0);
+  const chatScrollRef = useRef(0);
+  const chatNeedsBottomRef = useRef(false);
+
+  function changeView(next: View, focusInput = false) {
+    if (viewRef.current === next) {
+      if (focusInput) inputRef.current?.focus();
+      return;
+    }
+    if (viewRef.current === "home") homeScrollRef.current = homeRef.current?.scrollTop ?? 0;
+    if (viewRef.current === "chat") chatScrollRef.current = scrollRef.current?.scrollTop ?? 0;
+    stopSpeaking();
+    stopDictation();
+    focusInputRef.current = focusInput;
+    viewRef.current = next;
+    if (next === "self-assessment") setAssessmentVisited(true);
+    if (next === "library") setLibraryVisited(true);
+    setView(next);
+  }
+
+  function navigate(next: View, focusInput = false) {
+    if (window.location.hash !== `#${next}`) window.history.pushState(null, "", `#${next}`);
+    changeView(next, focusInput);
+  }
+
+  useEffect(() => {
+    try { setAppFrame(localStorage.getItem(FRAME_KEY) === "1"); } catch {}
+  }, []);
+
+  function toggleAppFrame() {
+    const next = !appFrame;
+    setAppFrame(next);
+    try { localStorage.setItem(FRAME_KEY, next ? "1" : "0"); } catch {}
+  }
+
+  useEffect(() => {
+    const restoreView = () => {
+      const hash = window.location.hash.slice(1);
+      changeView(hash === "chat" || hash === "self-assessment" || hash === "library" ? hash : "home");
+    };
+    restoreView();
+    window.addEventListener("popstate", restoreView);
+    window.addEventListener("hashchange", restoreView);
+    return () => {
+      window.removeEventListener("popstate", restoreView);
+      window.removeEventListener("hashchange", restoreView);
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    if (view === "home" && homeRef.current) {
+      homeRef.current.scrollTop = homeScrollRef.current;
+      homeRef.current.querySelector<HTMLElement>("h2")?.focus({ preventScroll: true });
+    }
+    if (view === "chat") {
+      if (scrollRef.current) scrollRef.current.scrollTop = chatNeedsBottomRef.current
+        ? scrollRef.current.scrollHeight : chatScrollRef.current;
+      chatNeedsBottomRef.current = false;
+      if (focusInputRef.current) inputRef.current?.focus();
+      else chatHeadingRef.current?.focus({ preventScroll: true });
+    }
+    focusInputRef.current = false;
+  }, [view]);
+
+  useEffect(() => { if (resetRequested) cancelResetRef.current?.focus(); }, [resetRequested]);
+
+  useLayoutEffect(() => {
+    const field = inputRef.current;
+    if (view !== "chat" || !field) return;
+    field.style.height = "auto";
+    field.style.height = `${Math.min(Math.max(field.scrollHeight, 44), 140)}px`;
+  }, [input, view]);
 
   useEffect(() => {
     let sid = localStorage.getItem("icare_session_id");
@@ -105,9 +175,9 @@ export default function Chat() {
     fetchMe().then((u) => {
       if (u) {
         setUser(u);
-        loadHistory();
+        return loadHistory();
       }
-    });
+    }).catch(() => { /* Guests can continue if account restoration is unavailable. */ });
   }, []);
 
   async function loadHistory() {
@@ -118,6 +188,7 @@ export default function Chat() {
         h.latest_messages.map((m) => ({
           role: m.role as "user" | "assistant",
           content: m.content,
+          sources: m.sources,
         }))
       );
     }
@@ -127,16 +198,21 @@ export default function Chat() {
     setUser(u);
     setAuthOpen(false);
     setMessages([]);
+    setInput("");
+    setTopicSuggestion(null);
+    setResetRequested(false);
     conversationIdRef.current = null;
-    loadHistory();
+    void loadHistory().catch(() => {});
   }
 
   async function handleLogout() {
     await doLogout();
     setUser(null);
     setMessages([]);
+    setInput("");
+    setTopicSuggestion(null);
+    setResetRequested(false);
     conversationIdRef.current = null;
-    setView("chat");
   }
 
   // Detect browser speech support AFTER mount only (avoids hydration mismatch).
@@ -148,7 +224,8 @@ export default function Chat() {
   }, []);
 
   useEffect(() => {
-    scrollRef.current?.scrollTo(0, scrollRef.current.scrollHeight);
+    if (viewRef.current === "chat") scrollRef.current?.scrollTo(0, scrollRef.current.scrollHeight);
+    else chatNeedsBottomRef.current = true;
   }, [messages, sending]);
 
   async function submit(text: string) {
@@ -165,7 +242,6 @@ export default function Chat() {
     try {
       let full = "";
       let sources: Source[] | undefined;
-      let wellbeingLogged = false;
       let resources: ResourcesPayload | undefined;
       let peer = false;
       const paint = () =>
@@ -175,7 +251,6 @@ export default function Chat() {
             role: "assistant",
             content: full,
             sources,
-            wellbeingLogged,
             resources,
             peer,
           };
@@ -190,9 +265,9 @@ export default function Chat() {
           },
           onSources: (s) => {
             sources = s;
+            paint();
           },
           onSignal: (sig) => {
-            if (sig && "wellbeing" in sig) wellbeingLogged = true;
             if (sig && sig.agent === "peer") {
               peer = true;
               paint();
@@ -209,7 +284,7 @@ export default function Chat() {
         sessionIdRef.current,
         conversationIdRef.current
       );
-      if (readAloud && full) speak(full);
+      if (readAloud && full && viewRef.current === "chat") speak(full);
     } catch {
       setMessages((m) => {
         const copy = [...m];
@@ -256,50 +331,57 @@ export default function Chat() {
     stopDictation();
     setMessages([]);
     setInput("");
+    setTopicSuggestion(null);
+    setResetRequested(false);
     conversationIdRef.current = null; // next message starts a fresh conversation
-    setView("chat");
+    inputRef.current?.focus();
   }
 
-  if (view === "wellbeing") {
-    return (
-      <WellbeingView
-        sessionId={sessionIdRef.current}
-        onBack={() => setView("chat")}
-      />
-    );
+  function chooseTopic(text: string) {
+    if (sending) return;
+    if (input.trim()) setTopicSuggestion(text);
+    else { setInput(text); setTopicSuggestion(null); }
+    navigate("chat", true);
+  }
+
+  function openHelp() {
+    stopSpeaking();
+    stopDictation();
+    setHelpOpen(true);
   }
 
   return (
-    <div className="app">
+    <div className={appFrame ? "app app-frame" : "app"}>
+      {appFrame && <div className="app-view-return">
+        <span>App view</span>
+        <button className="return-web-btn" onClick={toggleAppFrame}>
+          <Monitor size={18} aria-hidden="true" /> Back to web view
+        </button>
+      </div>}
       <header className="header">
-        <BrandMark size={42} />
-        <div className="brand-copy">
-          <h1>I-Care</h1>
-          <div className="status" aria-label="I-Care is online">
-            <span className="status-dot" />
-            <span>Online · Caregiver Companion</span>
+        <div className="brand">
+          <BrandMark size={54} />
+          <div className="brand-copy">
+            <h1>I-Care</h1>
+            <p className="brand-tagline">Caregiver Companion</p>
           </div>
         </div>
+        <nav className="primary-nav" aria-label="Main navigation">
+          {NAVIGATION.map((item) => <button key={item.id} onClick={() => navigate(item.id)}
+            aria-current={view === item.id ? "page" : undefined} aria-controls={`panel-${item.id}`}>
+            <item.icon size={21} aria-hidden="true" /><span>{item.label}</span>
+          </button>)}
+        </nav>
         <div className="header-actions">
-          {messages.length > 0 && (
-            <button
-              className="ghost-btn"
-              onClick={newChat}
-              aria-label="New conversation"
-              title="New conversation"
-            >
-              <SquarePen size={20} />
-            </button>
-          )}
-          <button
-            className="ghost-btn"
-            onClick={() => setView("wellbeing")}
-            aria-label="Your well-being"
-            title="Your well-being"
-          >
-            <LineChart size={20} />
+          {!appFrame && <button className="view-toggle" onClick={toggleAppFrame}
+            aria-label="Switch to app view" title="Preview I-Care at phone size">
+            <Smartphone size={18} aria-hidden="true" />
+            <span className="view-toggle-label">App view</span>
+          </button>}
+          <button className="help-launcher" onClick={openHelp} aria-haspopup="dialog">
+            <CircleHelp size={18} aria-hidden="true" /> Help
           </button>
-          {canSpeechOut && (
+          {canSpeechOut && view === "chat" && (
             <button
               className={`ghost-btn ${readAloud ? "on" : ""}`}
               onClick={toggleReadAloud}
@@ -311,17 +393,19 @@ export default function Chat() {
           )}
           {user ? (
             <button
-              className="ghost-btn"
+              className="signin-btn"
               onClick={handleLogout}
+              disabled={sending}
               aria-label={`Sign out (${user.display_name})`}
               title={`${user.display_name} · Sign out`}
             >
-              <LogOut size={20} />
+              <LogOut size={16} /> Sign out
             </button>
           ) : (
             <button
               className="signin-btn"
               onClick={() => setAuthOpen(true)}
+              disabled={sending}
               title="Sign in or create an account"
             >
               <LogIn size={16} /> Sign in
@@ -336,54 +420,35 @@ export default function Chat() {
           onClose={() => setAuthOpen(false)}
         />
       )}
+      {helpOpen && <HelpGuide onClose={() => setHelpOpen(false)} />}
 
-      <div
-        className={`messages${messages.length === 0 ? " welcome-mode" : ""}`}
-        ref={scrollRef}
-      >
-        {messages.length === 0 && (
-          <div className="welcome">
-            <div className="welcome-mark">
-              <BrandMark large />
-            </div>
-            <div className="welcome-eyebrow">Dementia caregiver support</div>
-            <h2>How can I support you today?</h2>
-            <p className="welcome-intro">
-              Practical guidance and compassionate support for dementia
-              caregivers, whenever you need it.
-            </p>
-            <div className="prompt-chips">
-              {SUGGESTED.map((s) => (
-                <button
-                  key={s.label}
-                  className="prompt-chip"
-                  onClick={() => submit(s.text)}
-                  type="button"
-                >
-                  <span className="prompt-icon">
-                    <s.icon size={21} />
-                  </span>
-                  <span className="prompt-copy">
-                    <strong>{s.label}</strong>
-                    <span>{s.description}</span>
-                  </span>
-                  <ChevronRight className="prompt-arrow" size={18} />
-                </button>
-              ))}
-            </div>
-            <div className="trust-strip" aria-label="I-Care support areas">
-              <span>
-                <BookOpen size={14} /> Care2Caregivers-informed guidance
-              </span>
-              <span>
-                <HeartHandshake size={14} /> Compassionate support
-              </span>
-              <span>
-                <MapPin size={14} /> New Jersey resources
-              </span>
-            </div>
+      <main className="app-main">
+        <section id="panel-home" className="app-panel home-page" hidden={view !== "home"} ref={homeRef} aria-labelledby="home-heading">
+          <HomeView hasConversation={messages.length > 0} hasDraft={Boolean(input.trim())} sending={sending}
+            onChat={() => navigate("chat", true)} onAssessment={() => navigate("self-assessment")}
+            onLibrary={() => navigate("library")} onTopic={chooseTopic} onHelp={openHelp} />
+        </section>
+        <section id="panel-chat" className="app-panel chat-page" hidden={view !== "chat"} aria-labelledby="chat-heading">
+          <div className="chat-toolbar"><h2 id="chat-heading" ref={chatHeadingRef} tabIndex={-1}>Your conversation</h2>
+            {(messages.length > 0 || input.trim()) && <button ref={newChatRef} className="new-chat-btn" onClick={() => setResetRequested(true)} disabled={sending}>
+              <SquarePen size={17} aria-hidden="true" /> New conversation
+            </button>}
           </div>
-        )}
+          {resetRequested && <div className="chat-choice" role="group" aria-label="Start a new conversation?">
+            <strong>Start a new conversation?</strong><p>This clears the conversation and any unfinished message from this screen.</p>
+            <div><button ref={cancelResetRef} onClick={() => { setResetRequested(false); newChatRef.current?.focus(); }}>Keep this conversation</button>
+              <button onClick={newChat} disabled={sending}>Start new conversation</button></div>
+          </div>}
+          {topicSuggestion && <div className="chat-choice" role="group" aria-label="Suggested question">
+            <strong>You have an unfinished message.</strong><p>Keep your draft, or replace it with this suggestion:</p><p>{topicSuggestion}</p>
+            <div><button onClick={() => { setTopicSuggestion(null); inputRef.current?.focus(); }}>Keep my draft</button>
+              <button onClick={() => { setInput(topicSuggestion); setTopicSuggestion(null); inputRef.current?.focus(); }}>Use suggested question</button></div>
+          </div>}
+      <div className="messages" ref={scrollRef}>
+        {messages.length === 0 && <div className="chat-empty">
+          <MessageCircle size={32} aria-hidden="true" /><h3>What&apos;s on your mind?</h3>
+          <p>Type your question below, then select <strong>Send</strong>.</p>
+        </div>}
 
         {messages.map((m, i) => (
           <div key={i} className={`turn ${m.role}`}>
@@ -393,16 +458,10 @@ export default function Chat() {
               </div>
             )}
             <div className="col">
-              {m.role === "assistant" && m.peer && (
-                <div className="peer-label">
-                  <Users size={13} /> Peer Companion · an AI reflecting fellow
-                  caregivers&apos; experiences
-                </div>
-              )}
               <div className={`bubble ${m.role}`}>
                 {m.content ? (
                   m.role === "assistant" ? (
-                    <Markdown>{m.content}</Markdown>
+                    <Markdown sources={m.sources}>{m.content}</Markdown>
                   ) : (
                     m.content
                   )
@@ -417,11 +476,6 @@ export default function Chat() {
                 )}
               </div>
 
-              {m.role === "assistant" && m.wellbeingLogged && (
-                <button className="wb-noted" onClick={() => setView("wellbeing")}>
-                  <Heart size={13} /> Noted how you&apos;re feeling — view trend
-                </button>
-              )}
               {m.role === "assistant" && m.resources && (
                 <ResourceCard resources={m.resources} />
               )}
@@ -432,8 +486,9 @@ export default function Chat() {
                   </span>
                   {m.sources.map((s) => (
                     <span key={s.n} className="source-chip">
-                      {s.url ? (
-                        <a href={s.url} target="_blank" rel="noreferrer">
+                      {sourceHref(s.url) ? (
+                        <a href={sourceHref(s.url)!} target="_blank" rel="noreferrer"
+                          aria-label={`Source ${s.n}: ${s.title} (opens in a new tab)`}>
                           [{s.n}] {s.title}
                         </a>
                       ) : (
@@ -451,45 +506,57 @@ export default function Chat() {
       </div>
 
       <div className="composer-wrap">
+        <div className="composer-label"><label htmlFor="chat-question">Your question or message</label>{listening && <span role="status">Listening…</span>}</div>
         <div className="composer">
           {canSpeechIn && (
             <button
-              className={`round-btn mic ${listening ? "on" : ""}`}
+              className={`round-btn mic labeled-control ${listening ? "on" : ""}`}
               onClick={toggleDictation}
               aria-label={listening ? "Stop dictation" : "Speak"}
               title={listening ? "Stop" : "Speak"}
             >
-              <Mic size={20} />
+              <Mic size={19} aria-hidden="true" /><span>{listening ? "Stop" : "Speak"}</span>
             </button>
           )}
           <textarea
+            id="chat-question"
+            ref={inputRef}
             rows={1}
-            placeholder="Ask I-Care about caregiving…"
+            placeholder="Type here…"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
+              if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
                 e.preventDefault();
                 submit(input);
               }
             }}
           />
           <button
-            className="round-btn send"
+            className="round-btn send labeled-control"
             onClick={() => submit(input)}
             disabled={sending || !input.trim()}
             aria-label="Send"
           >
-            <ArrowUp size={20} />
+            <ArrowUp size={19} aria-hidden="true" /><span>Send</span>
           </button>
         </div>
-        <div className="footer">
-          I-Care is an educational tool, not medical advice. In an emergency call
-          911.
+      </div>
+        </section>
+        <section id="panel-library" className="app-panel library-panel" hidden={view !== "library"} aria-labelledby="library-heading">
+          {libraryVisited && <GuideLibrary visible={view === "library"} />}
+        </section>
+        <section id="panel-self-assessment" className="app-panel sa-panel" hidden={view !== "self-assessment"} aria-label="Self-assessment">
+          {assessmentVisited && <SelfAssessment key={user?.id ?? "guest"} user={user} visible={view === "self-assessment"} />}
+        </section>
+      </main>
+        {/* Home has its own footer beneath the urgent-help section. */}
+        {view !== "home" && <footer className="footer app-footer">
+          I-Care is an educational tool, not medical advice. In an emergency, call{" "}
+          <a className="footer-call" href="tel:911">911</a>.
           <br />
           ©2026 Rutgers, The State University of New Jersey. All rights reserved.
-        </div>
-      </div>
+        </footer>}
     </div>
   );
 }

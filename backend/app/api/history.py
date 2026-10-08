@@ -16,7 +16,7 @@ def history(user: User = Depends(current_user)) -> dict:
     latest_id = db.latest_conversation(user.id)
     messages = (
         [
-            {"role": m.role, "content": m.content}
+            {"role": m.role, "content": m.content, "sources": m.sources}
             for m in db.conversation_messages(latest_id)
         ]
         if latest_id

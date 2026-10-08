@@ -1,5 +1,7 @@
 # Peer-Support 模块 / 虚拟同伴互动 — 设计与实施记录（M8）
 
+> **2026-09-28 更新：** 虚拟同伴对话与 AI 标识保留；下文提到的自动情绪记录和历史压力反馈已停用，见 [升级第 1 步](upgrade-step-1.md)。
+
 > 活文档 / 维护记录：先写计划，实施时逐条回填"改动记录"。
 > 关联：[DESIGN.md](../DESIGN.md)、[agent-orchestration.md](agent-orchestration.md)。
 

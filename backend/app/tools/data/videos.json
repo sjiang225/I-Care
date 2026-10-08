@@ -1,7 +1,7 @@
 {
   "source": "https://care2caregivers.com/help-for-caregivers/videos/",
   "fetched": "2026-07-01",
-  "note": "COPSA/Care2Caregivers YouTube videos. Categories align with KB categories. v1 surfaces language=en only.",
+  "note": "COPSA/Care2Caregivers YouTube videos. Categories align with KB categories. The library lists all languages; chat recommendations default to English.",
   "videos": [
     {
       "title": "Compassion Fatigue and Burnout",

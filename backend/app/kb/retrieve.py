@@ -14,7 +14,16 @@ from .store import LocalVectorStore, SearchHit
 
 @lru_cache
 def _store() -> LocalVectorStore:
-    return LocalVectorStore(get_settings().kb_db_path)
+    settings = get_settings()
+    store = LocalVectorStore(settings.kb_db_path)
+    recorded = store.get_meta("embed_model")
+    if settings.llm_provider.lower() == "openai" and recorded and recorded != settings.openai_embed_model:
+        raise RuntimeError(
+            f"Knowledge base {settings.kb_db_path} was embedded with {recorded!r}, but "
+            f"OPENAI_EMBED_MODEL is {settings.openai_embed_model!r}. Point KB_DB_PATH at a "
+            "knowledge base built with the same model (see scripts/reembed_kb.py)."
+        )
+    return store
 
 
 def retrieve(

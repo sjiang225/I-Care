@@ -1,5 +1,7 @@
 # NJ 本地资源 + Care2Caregivers 视频 — 设计与实施记录（M4）
 
+> **2026-09-29 更新：** Library 教育资料目录已加入现有全部 12 条视频（10 英语、1 西班牙语、1 俄语），标明语言、提供 YouTube 链接，支持类型/主题筛选和标题/语言搜索。用户可直接浏览；聊天仍按主题推荐最多 2 条英语视频。见 [资料目录实施记录](guide-library-and-citations.md)。
+
 > 活文档 / 维护记录：先写计划，实施时逐条回填"改动记录"。
 > 关联：[DESIGN.md](../DESIGN.md)、[agent-orchestration.md](agent-orchestration.md)。
 

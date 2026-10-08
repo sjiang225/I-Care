@@ -30,7 +30,8 @@ def _resources() -> list[dict]:
 
 
 @lru_cache
-def _videos() -> list[dict]:
+def load_videos() -> list[dict]:
+    """Complete curated video list, including all available languages."""
     return json.loads((_DATA / "videos.json").read_text("utf-8"))["videos"]
 
 
@@ -42,7 +43,7 @@ def pick_videos(category: str, limit: int = 2, language: str = "en") -> list[dic
     """Topic-relevant videos for a KB category (title + url only)."""
     hits = [
         {"title": v["title"], "url": v["url"]}
-        for v in _videos()
+        for v in load_videos()
         if v.get("language", "en") == language and v.get("category") == category
     ]
     return hits[:limit]
@@ -56,6 +57,8 @@ def get_local_resources(county: str | None = None, max_facilities: int = 8) -> d
             "phone": r["phone"],
             "url": r["url"],
             "description": r["description"],
+            "hours": r.get("hours"),
+            "after_hours": r.get("after_hours"),
         }
         for r in _resources()
     ]

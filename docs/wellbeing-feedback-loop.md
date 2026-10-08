@@ -1,5 +1,7 @@
 # 情绪趋势回喂对话闭环 — 设计与实施记录（M6）
 
+> **历史记录：此功能已于 2026-09-28 停用。** 对话不再读取或使用旧推断压力记录。当前实现见 [升级第 1 步](upgrade-step-1.md)，以下内容保留为历史设计与验证记录。
+
 > 活文档 / 维护记录：先写计划，实施时逐条回填"改动记录"。
 > 关联：[DESIGN.md](../DESIGN.md)、[wellbeing-visualization.md](wellbeing-visualization.md)、[agent-orchestration.md](agent-orchestration.md)。
 

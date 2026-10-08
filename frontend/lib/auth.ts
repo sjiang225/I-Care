@@ -1,4 +1,5 @@
 // Auth client: token storage + register/login/logout/me + history.
+import type { Source } from "./api";
 
 const TOKEN_KEY = "icare_token";
 
@@ -75,7 +76,7 @@ export async function logout(): Promise<void> {
 
 export interface HistoryData {
   latest_conversation_id: number | null;
-  latest_messages: { role: string; content: string }[];
+  latest_messages: { role: string; content: string; sources?: Source[] }[];
 }
 
 export async function getHistory(): Promise<HistoryData> {

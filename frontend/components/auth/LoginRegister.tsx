@@ -45,7 +45,7 @@ export default function LoginRegister({
         <div className="auth-head">
           <BrandMark size={48} />
           <h2>{mode === "login" ? "Welcome back" : "Create your account"}</h2>
-          <p>Save your conversations and track how you&apos;re feeling over time.</p>
+          <p>Save your conversations and pick up where you left off.</p>
         </div>
 
         <form onSubmit={submit} className="auth-form">

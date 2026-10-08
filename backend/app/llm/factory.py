@@ -20,6 +20,7 @@ def get_llm() -> LLMProvider:
             base_url=s.openai_base_url,
             chat_model=s.openai_chat_model,
             embed_model=s.openai_embed_model,
+            reasoning_effort=s.openai_reasoning_effort,
         )
     if provider == "mock":
         return MockProvider()

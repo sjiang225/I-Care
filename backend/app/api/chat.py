@@ -10,7 +10,7 @@ import json
 from dataclasses import asdict
 from typing import Iterator
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
@@ -63,6 +63,8 @@ def chat(
     conversation_id: int | None = None
     if user is not None:
         owner_key = f"u:{user.id}"
+        if req.conversation_id is not None and not db.owns_conversation(req.conversation_id, user.id):
+            raise HTTPException(status_code=404, detail="Conversation not found")
         conversation_id = req.conversation_id or db.create_conversation(
             user.id, title=last_user_text[:60]
         )
@@ -76,11 +78,14 @@ def chat(
         if conversation_id is not None:
             yield _sse("meta", {"conversation_id": conversation_id})
         full = ""
+        saved_sources: list[dict] = []
+        completed = False
         try:
             for kind, payload in _coordinator.stream(ctx):
                 if kind == "sources":
                     sources: list[Source] = payload  # type: ignore[assignment]
-                    yield _sse("sources", {"sources": [asdict(s) for s in sources]})
+                    saved_sources = [asdict(s) for s in sources]
+                    yield _sse("sources", {"sources": saved_sources})
                 elif kind == "delta":
                     full += payload  # type: ignore[operator]
                     yield _sse("delta", {"text": payload})
@@ -88,12 +93,14 @@ def chat(
                     yield _sse("resources", payload)  # type: ignore[arg-type]
                 elif kind == "signal":
                     yield _sse("signal", payload)  # type: ignore[arg-type]
-            yield _sse("done", {})
+            completed = True
         except Exception as exc:
             yield _sse("error", {"message": str(exc)})
         finally:
             if user is not None and conversation_id is not None and full:
-                db.add_message(conversation_id, user.id, "assistant", full)
+                db.add_message(conversation_id, user.id, "assistant", full, sources=saved_sources)
+        if completed:
+            yield _sse("done", {})
 
     # SSE must remain an uncompressed, unbuffered byte stream. In particular,
     # ngrok may otherwise gzip the response requested by browsers and buffer or

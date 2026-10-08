@@ -40,5 +40,5 @@ class ToolRegistry:
         return tool.handler(call.arguments, session_id)
 
 
-# Process-wide registry populated by tool modules (see wellbeing.py).
+# Process-wide registry populated by tool modules (see resources.py).
 registry = ToolRegistry()

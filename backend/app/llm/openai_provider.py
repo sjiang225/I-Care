@@ -23,11 +23,18 @@ class OpenAIProvider:
         base_url: str,
         chat_model: str,
         embed_model: str,
+        reasoning_effort: str = "",
     ) -> None:
         # api_key may be a placeholder for local servers that don't check it.
         self._client = OpenAI(api_key=api_key or "not-needed", base_url=base_url)
         self._chat_model = chat_model
         self._embed_model = embed_model
+        # Only sent when configured, so plain OpenAI chat models keep working.
+        self._extra = {"reasoning_effort": reasoning_effort} if reasoning_effort else {}
+
+    @property
+    def embed_model(self) -> str:
+        return self._embed_model
 
     def _to_openai(self, messages: list[Message]) -> list[dict]:
         out: list[dict] = []
@@ -91,6 +98,7 @@ class OpenAIProvider:
             "messages": self._to_openai(messages),
             "temperature": temperature,
             "max_tokens": max_tokens,
+            **self._extra,
         }
         oai_tools = self._to_openai_tools(tools)
         if oai_tools:
@@ -131,6 +139,7 @@ class OpenAIProvider:
             temperature=temperature,
             max_tokens=max_tokens,
             stream=True,
+            **self._extra,
         )
         for chunk in stream:
             if not chunk.choices:

@@ -81,6 +81,8 @@ def ingest(limit: int | None = None) -> int:
     store = LocalVectorStore(settings.kb_db_path)
     store.reset()
     store.add(records)
+    if settings.llm_provider.lower() == "openai":
+        store.set_meta("embed_model", settings.openai_embed_model)
     print(f"Stored {store.count()} chunks -> {settings.kb_db_path}")
     return store.count()
 

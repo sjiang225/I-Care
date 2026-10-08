@@ -15,8 +15,10 @@ from ..llm.base import Message
 from ..llm.factory import get_llm
 from ..tools.resources import pick_videos
 from .base import AgentContext, AgentEvent
+from .style import CARE_RECIPIENT_TERMS, CAREGIVER_VOICE, safety_instruction
 
-EDUCATION_SYSTEM = """You are I-Care, a warm, patient companion for dementia \
+EDUCATION_SYSTEM = (
+    """You are I-Care, a warm, patient companion for dementia \
 caregivers. Answer the caregiver's question using ONLY the Care2Caregivers \
 reference material provided below.
 
@@ -26,17 +28,27 @@ Rules:
 - If the material does not cover the question, say so honestly, give only \
 general, safe guidance, and suggest contacting the Care2Caregivers helpline or \
 their doctor. Never invent facts or citations.
-- Be empathetic and practical. Use plain, simple language and short paragraphs \
+- Be warm and practical. Use plain, simple language and short paragraphs \
 (many caregivers are older adults).{tone}
 - You are not a medical professional. For emergencies, urgent safety risks, or \
 sudden changes, advise calling 911 or a doctor.
+"""
+    + CAREGIVER_VOICE
+    + CARE_RECIPIENT_TERMS
+    + """
 
 Reference material:
 {context}"""
+)
 
 _EMOTION_TONE = (
-    "\n- The caregiver also sounds emotionally stressed. Open with one short, "
-    "warm sentence acknowledging their feelings before the practical guidance."
+    "\n- The caregiver has also shared how they feel. Open with one short sentence "
+    "that thanks them for sharing and reflects only the feelings they stated, then "
+    "move to the practical guidance."
+)
+_AFTER_SUPPORT = (
+    "\n- A supportive reply has already been given just above. Go straight to the "
+    "practical guidance, with no greeting, thanks or acknowledgement of feelings."
 )
 
 
@@ -89,15 +101,12 @@ class EducationAgent:
         if extras:
             yield ("resources", extras)
 
-        # Add an empathetic lead-in when emotional distress is present OR the
-        # well-being trend shows high stress — and the Emotion agent hasn't
-        # already handled empathy this turn (composition).
-        needs_empathy = (
-            ctx.flags.get("needs_emotion") or ctx.flags.get("high_stress")
-        ) and not ctx.flags.get("empathy_done")
+        # Add empathy for this conversation if a supportive agent hasn't
+        # already handled it. Legacy inferred scores never affect the answer.
+        needs_empathy = ctx.flags.get("needs_emotion") and not ctx.flags.get("empathy_done")
         tone = _EMOTION_TONE if needs_empathy else ""
-        if ctx.flags.get("caregiver_state") and not ctx.flags.get("empathy_done"):
-            tone += "\n- " + ctx.flags["caregiver_state"]
+        if ctx.flags.get("empathy_done"):
+            tone += _AFTER_SUPPORT
         if extras:
             tone += (
                 "\n- Local NJ resources and/or a short related video are shown "
@@ -105,7 +114,7 @@ class EducationAgent:
             )
         system = Message(
             role="system",
-            content=EDUCATION_SYSTEM.format(context=context, tone=tone),
+            content=safety_instruction(ctx.flags) + EDUCATION_SYSTEM.format(context=context, tone=tone),
         )
         prompt = [system, *ctx.recent(self._history_turns)]
 
@@ -120,14 +129,6 @@ class EducationAgent:
         )
         dominant = categories.most_common(1)[0][0] if categories else None
         videos = pick_videos(dominant) if dominant else []
-
-        # Under high stress, also surface a self-care video regardless of topic.
-        extra_cat = ctx.flags.get("extra_video_category")
-        if extra_cat:
-            urls = {v["url"] for v in videos}
-            for v in pick_videos(extra_cat, limit=1):
-                if v["url"] not in urls:
-                    videos.append(v)
 
         payload = {
             "helplines": res.get("helplines", []),

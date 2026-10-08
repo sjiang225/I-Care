@@ -1,37 +1,19 @@
 """Application database (SQLite for now; swap to Postgres alongside pgvector).
 
-Currently holds the caregiver well-being log that powers the proposal's
-"track caregiver stress patterns over time" requirement.
+Stores accounts, conversations, and explicitly submitted self-assessments.
+Legacy inferred well-being records are retained in place, but no application
+reader or writer uses them. Voluntary assessments have a separate data model.
 """
 from __future__ import annotations
 
 import json
 import sqlite3
 import time
-from collections import Counter
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path
 
 from .config import get_settings
-
-
-@dataclass
-class WellbeingLog:
-    session_id: str
-    ts: float
-    stress_level: int  # 1..5
-    emotions: list[str]
-    note: str
-
-
-@dataclass
-class WellbeingSummary:
-    count: int
-    avg_stress: float
-    latest_stress: int | None
-    trend: str  # "up" | "down" | "steady" (rising stress = "up")
-    top_emotions: list[tuple[str, int]]
 
 
 @dataclass
@@ -46,6 +28,7 @@ class MessageRow:
     role: str
     content: str
     ts: float
+    sources: list[dict] = field(default_factory=list)
 
 
 class Database:
@@ -56,6 +39,8 @@ class Database:
         self._init_schema()
 
     def _init_schema(self) -> None:
+        # Preserve the legacy table/schema without deleting or migrating data.
+        # Automatic recording and application access were retired in step 1.
         self._conn.execute(
             """
             CREATE TABLE IF NOT EXISTS wellbeing_logs (
@@ -103,8 +88,25 @@ class Database:
             );
             CREATE INDEX IF NOT EXISTS idx_conv_user ON conversations(user_id);
             CREATE INDEX IF NOT EXISTS idx_msg_conv ON messages(conversation_id);
+            CREATE TABLE IF NOT EXISTS self_assessments (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                submission_id TEXT NOT NULL,
+                instrument_id TEXT NOT NULL,
+                instrument_version TEXT NOT NULL,
+                answers TEXT NOT NULL,
+                difficulty INTEGER,
+                result TEXT NOT NULL,
+                created_at REAL NOT NULL,
+                UNIQUE(user_id, submission_id)
+            );
+            CREATE INDEX IF NOT EXISTS idx_assessment_user ON self_assessments(user_id, id);
             """
         )
+        # Additive migration: old answers have no recoverable citation mapping.
+        columns = {row[1] for row in self._conn.execute("PRAGMA table_info(messages)")}
+        if "sources" not in columns:
+            self._conn.execute("ALTER TABLE messages ADD COLUMN sources TEXT NOT NULL DEFAULT '[]'")
         self._conn.commit()
 
     # ---- Users & auth ----
@@ -176,90 +178,63 @@ class Database:
         return row[0] if row else None
 
     def add_message(
-        self, conversation_id: int, user_id: int, role: str, content: str
+        self, conversation_id: int, user_id: int, role: str, content: str,
+        sources: list[dict] | None = None,
     ) -> None:
         self._conn.execute(
-            "INSERT INTO messages (conversation_id, user_id, role, content, created_at)"
-            " VALUES (?, ?, ?, ?, ?)",
-            (conversation_id, user_id, role, content, time.time()),
+            "INSERT INTO messages (conversation_id, user_id, role, content, created_at, sources)"
+            " VALUES (?, ?, ?, ?, ?, ?)",
+            (conversation_id, user_id, role, content, time.time(), json.dumps(sources or [])),
         )
         self._conn.commit()
 
     def conversation_messages(self, conversation_id: int) -> list["MessageRow"]:
         rows = self._conn.execute(
-            "SELECT role, content, created_at FROM messages"
+            "SELECT role, content, created_at, sources FROM messages"
             " WHERE conversation_id = ? ORDER BY id ASC",
             (conversation_id,),
         ).fetchall()
-        return [MessageRow(role=r[0], content=r[1], ts=r[2]) for r in rows]
+        return [MessageRow(role=r[0], content=r[1], ts=r[2], sources=json.loads(r[3])) for r in rows]
 
-    def add_wellbeing(
-        self, session_id: str, stress_level: int, emotions: list[str], note: str = ""
-    ) -> WellbeingLog:
-        log = WellbeingLog(
-            session_id=session_id,
-            ts=time.time(),
-            stress_level=max(1, min(5, int(stress_level))),
-            emotions=emotions,
-            note=note,
-        )
+    def owns_conversation(self, conversation_id: int, user_id: int) -> bool:
+        return self._conn.execute(
+            "SELECT 1 FROM conversations WHERE id = ? AND user_id = ?",
+            (conversation_id, user_id),
+        ).fetchone() is not None
+
+    # ---- Voluntary self-assessment (never used by chat agents) ----
+
+    def save_assessment(
+        self, user_id: int, submission_id: str, answers: list[int],
+        difficulty: int | None, result: dict,
+    ) -> dict:
+        encoded_answers = json.dumps(answers)
         self._conn.execute(
-            "INSERT INTO wellbeing_logs (session_id, ts, stress_level, emotions, note)"
-            " VALUES (?, ?, ?, ?, ?)",
-            (
-                log.session_id,
-                log.ts,
-                log.stress_level,
-                json.dumps(log.emotions, ensure_ascii=False),
-                log.note,
-            ),
+            "INSERT OR IGNORE INTO self_assessments"
+            " (user_id, submission_id, instrument_id, instrument_version, answers, difficulty, result, created_at)"
+            " VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            (user_id, submission_id, result["instrument_id"], result["instrument_version"],
+             encoded_answers, difficulty, json.dumps(result), time.time()),
         )
         self._conn.commit()
-        return log
+        row = self._conn.execute(
+            "SELECT id, created_at, instrument_id, instrument_version, answers, difficulty, result"
+            " FROM self_assessments WHERE user_id = ? AND submission_id = ?",
+            (user_id, submission_id),
+        ).fetchone()
+        # Safe to retry after a lost response, but never overwrite an earlier result.
+        if (row[2], row[3], row[4], row[5]) != (
+            result["instrument_id"], result["instrument_version"], encoded_answers, difficulty,
+        ):
+            raise ValueError("This submission was already saved with different answers. Start a new assessment.")
+        return {**json.loads(row[6]), "id": row[0], "created_at": row[1], "saved": True}
 
-    def wellbeing_trend(self, session_id: str, limit: int = 30) -> list[WellbeingLog]:
-        """Return logs newest-first (most recent `limit` entries)."""
+    def assessment_history(self, user_id: int, limit: int = 20) -> list[dict]:
         rows = self._conn.execute(
-            "SELECT session_id, ts, stress_level, emotions, note FROM wellbeing_logs"
-            " WHERE session_id = ? ORDER BY ts DESC LIMIT ?",
-            (session_id, limit),
+            "SELECT id, created_at, result FROM self_assessments"
+            " WHERE user_id = ? ORDER BY id DESC LIMIT ?", (user_id, limit),
         ).fetchall()
-        return [
-            WellbeingLog(
-                session_id=r[0],
-                ts=r[1],
-                stress_level=r[2],
-                emotions=json.loads(r[3]),
-                note=r[4] or "",
-            )
-            for r in rows
-        ]
-
-    def wellbeing_summary(
-        self, session_id: str, limit: int = 30
-    ) -> WellbeingSummary:
-        """Aggregate the recent trend: count, average, latest, direction, emotions."""
-        asc = list(reversed(self.wellbeing_trend(session_id, limit)))  # oldest->newest
-        if not asc:
-            return WellbeingSummary(0, 0.0, None, "steady", [])
-
-        stresses = [l.stress_level for l in asc]
-        count = len(stresses)
-        avg = round(sum(stresses) / count, 2)
-        latest = stresses[-1]
-
-        # Trend: compare the later half's mean stress against the earlier half's.
-        trend = "steady"
-        if count >= 4:
-            half = count // 2
-            earlier = stresses[:half]
-            later = stresses[half:]
-            diff = (sum(later) / len(later)) - (sum(earlier) / len(earlier))
-            trend = "up" if diff > 0.5 else "down" if diff < -0.5 else "steady"
-
-        counter = Counter(e for l in asc for e in l.emotions)
-        top = counter.most_common(5)
-        return WellbeingSummary(count, avg, latest, trend, top)
+        return [{**json.loads(r[2]), "id": r[0], "created_at": r[1], "saved": True} for r in rows]
 
 
 @lru_cache

@@ -18,8 +18,9 @@ from ..llm.base import Message
 # What an agent streams back. Consumed by the API layer and turned into SSE.
 #   ("sources", list[Source])  -- citations for the answer
 #   ("delta",   str)           -- a chunk of answer text
-#   ("signal",  dict)          -- a side-channel event (e.g. wellbeing logged)
-EventKind = Literal["sources", "delta", "signal"]
+#   ("signal",  dict)          -- plan, safety notice, or peer-companion identity
+#   ("resources", dict)       -- helplines, facilities, and related videos
+EventKind = Literal["sources", "delta", "signal", "resources"]
 AgentEvent = tuple[EventKind, object]
 
 

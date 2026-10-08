@@ -1,0 +1,641 @@
+{
+  "label": "after",
+  "results": [
+    {
+      "id": "resource-daycare",
+      "kind": "Resource request",
+      "expect_emotion": false,
+      "text": "Where can I find adult day care in Bergen County?",
+      "plan": [
+        "education"
+      ],
+      "safety": null,
+      "answer": "You can find adult day care services in Bergen County by contacting the Care2Caregivers helpline at 800.424.2494. They can provide you with resources and referrals for adult day care options in your area. \n\nAdditionally, you might want to check local listings or the New Jersey Department of Human Services for more information on available facilities. \n\nIf you need more specific assistance, consider reaching out to your doctor or local health services. \n\nFeel free to explore local resources or watch related videos for additional support.",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "no_unstated_emotion": true,
+        "starts_with_answer": true
+      },
+      "repeat": 1
+    },
+    {
+      "id": "resource-groups",
+      "kind": "Resource request",
+      "expect_emotion": false,
+      "text": "Are there support groups for dementia caregivers in New Jersey?",
+      "plan": [
+        "education"
+      ],
+      "safety": null,
+      "answer": "Yes, there are support groups for dementia caregivers in New Jersey. Care2Caregivers provides resources, information, and support specifically for those caring for individuals with memory loss. Connecting with others who have similar experiences can be very helpful. \n\nYou can reach out to Care2Caregivers for more information about available support groups and resources. Their helpline is 800.424.2494, and they are there to listen and guide you. \n\nIf you're interested, you might also want to check local resources or visit their website for more details.",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "no_unstated_emotion": true,
+        "starts_with_answer": true
+      },
+      "repeat": 1
+    },
+    {
+      "id": "topic-agitation",
+      "kind": "Practical question on a hard topic",
+      "expect_emotion": false,
+      "text": "How do I handle agitation in the late afternoon?",
+      "plan": [
+        "education"
+      ],
+      "safety": null,
+      "answer": "Handling agitation in the late afternoon can be challenging, but there are several strategies you can try. \n\nFirst, it's important to identify any triggers that might be causing the agitation. Think about what happens right before the person living with dementia becomes upset. For example, does it happen when there are loud noises or when too many people are around? If you can identify these triggers, you can try to minimize them [3].\n\nYou can also redirect their attention to another activity. Engaging them in a simple task, like folding laundry or taking a walk together, can help dissipate negative energy [1]. Physical activities are particularly helpful, as they can help burn off excess energy and provide a distraction.\n\nAdditionally, consider the environment. Make sure the space is calm and soothing. Dim the lights, play soft music, and remove any disturbing stimuli, like loud television shows [2].\n\nIf agitation persists, it might be helpful to create a structured routine for the late afternoon. This can include planned activities that keep them engaged and distracted, which can help reduce agitation [4].\n\nIf you need more support, please feel free to contact the Care2Caregivers helpline at 800.424.2494, where trained caregivers can help you navigate these situations.\n\nFor local NJ resources or related videos, please take a look below.",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "no_unstated_emotion": true,
+        "starts_with_answer": true
+      },
+      "repeat": 1
+    },
+    {
+      "id": "topic-signs",
+      "kind": "Practical question on a hard topic",
+      "expect_emotion": false,
+      "text": "What are the signs that someone with dementia needs more help at home?",
+      "plan": [
+        "education"
+      ],
+      "safety": null,
+      "answer": "There are several signs that the person you care for may need more help at home. Here are some key indicators to look for:\n\n1. **Personal Appearance**: If they start to look disheveled, it may suggest difficulty with personal hygiene. Signs include strong body odor, unkempt hair, or ill-fitting clothes [2].\n\n2. **Home Environment**: Check their living space. If you notice unopened mail, unpaid bills, or a cluttered environment, these could be red flags. Also, look for expired food in the refrigerator or an empty fridge, which may indicate they are not managing their nutrition well [2].\n\n3. **Daily Activities**: If they have trouble preparing familiar meals, forget recent events, or get lost while driving or walking, these are signs that they may need additional support [3].\n\n4. **Safety Concerns**: If they are forgetting things like leaving a pot on the stove or getting lost when they leave home, these situations can be serious and indicate they cannot be left alone safely [2].\n\n5. **Physical Signs**: Unexplained bruising or weight changes may suggest they are having trouble with mobility or nutrition [2].\n\nIf you notice any of these signs, it may be time to consider hiring help, such as a home health aide, or looking into day programs for supervision and companionship [1][2]. If you're unsure, reaching out to the Care2Caregivers helpline or their doctor can provide additional guidance.",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "no_unstated_emotion": true,
+        "starts_with_answer": true
+      },
+      "repeat": 1
+    },
+    {
+      "id": "feel-guilt",
+      "kind": "Feelings shared",
+      "expect_emotion": true,
+      "text": "I feel so guilty and exhausted. Some days I don't know if I'm doing any of this right.",
+      "plan": [
+        "emotion"
+      ],
+      "safety": null,
+      "answer": "Thank you for sharing how you're feeling. It's completely understandable to feel guilty and exhausted in your situation. You're not alone in these feelings; many caregivers experience the same struggles. \n\nYour willingness to reach out and express how you're feeling shows your strength and desire to care, even when it's tough. \n\nTaking care of yourself is essential. Perhaps you could set aside just a few minutes each day to do something that brings you joy or relaxation, like a short walk or listening to your favorite music. Also, consider asking a friend or family member for a little help, even if it's just for a short while. \n\nRemember, support is available through the Care2Caregivers helpline at 1-800-424-2494 if you need someone to talk to. \n\nWhat is one small thing you could do for yourself today?",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "thanks_for_sharing": true
+      },
+      "repeat": 1
+    },
+    {
+      "id": "feel-overwhelmed",
+      "kind": "Feelings shared",
+      "expect_emotion": true,
+      "text": "I'm completely overwhelmed. I haven't slept properly in weeks.",
+      "plan": [
+        "emotion"
+      ],
+      "safety": null,
+      "answer": "Thank you for sharing this. It's completely understandable to feel overwhelmed, especially when you're not getting the sleep you need. You're definitely not alone in feeling this way.\n\nYour message shows strength in acknowledging your struggle and reaching out for support. It's a tough situation, but you're doing your best to care for the person living with dementia.\n\nTo help with your sleep, it might be beneficial to establish a calming bedtime routine. This could include activities like reading or practicing deep breathing exercises. Also, try to limit caffeine and alcohol, especially in the evening, as they can disrupt sleep.\n\nIf you feel comfortable, consider reaching out to the Care2Caregivers helpline at 1-800-424-2494 for additional support. \n\nWhat\u2019s one small thing you could do for yourself today, perhaps a short break or a quiet moment?",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "thanks_for_sharing": true
+      },
+      "repeat": 1
+    },
+    {
+      "id": "mixed-husband",
+      "kind": "Feelings + practical",
+      "expect_emotion": true,
+      "relation": "husband",
+      "text": "My husband keeps asking the same question over and over and I'm losing my patience. What can I do?",
+      "plan": [
+        "emotion",
+        "education"
+      ],
+      "safety": null,
+      "answer": "Thank you for sharing this. It's completely understandable to feel frustrated when your husband is asking the same question repeatedly. That sense of exhaustion and impatience is common among caregivers, and you are not alone in feeling this way.\n\nYour willingness to reach out for help shows your strength and commitment, even when things are tough. One approach you might try is to offer reassurance with calming phrases, like \"You are safe\" or \"I am here with you.\" This can help provide comfort and may reduce the repetition of questions.\n\nAdditionally, it can be helpful to gently redirect the conversation or engage him in an activity to shift his focus. Simple tasks or light physical movement can sometimes ease restlessness and anxiety.\n\nIf you need more support, consider reaching out to the Care2Caregivers helpline at 1-800-424-2494. \n\nWhat\u2019s one small thing you could do for yourself right now?\n\nHere are some practical things that may help:\n\nWhen your husband asks the same question repeatedly, it can be helpful to remember that this behavior is a part of his condition. Here are some strategies you can try:\n\n1. **Be Patient**: Allow ample time for him to process what you are saying. Talk slowly and give him a moment to respond before repeating yourself. If needed, restate your answer using different words after a few minutes [3].\n\n2. **Reassurance**: Offer comforting phrases like, \u201cYou are safe\u201d or \u201cI am with you.\u201d Reassurance can help him feel more secure and may reduce the frequency of his questions [2].\n\n3. **Analyze Triggers**: Consider if there are specific times or situations that lead to his repeated questions. Identifying triggers can help you manage them better [1].\n\n4. **Engage in Activities**: Keeping him engaged in activities may help distract him from asking the same questions. Incorporate more physical activity into his day to help burn off energy and reduce restlessness [1].\n\n5. **Listen and Validate**: Even if you\u2019ve answered his question before, listen to him and encourage him to express himself. This can help you pick up on what he might be feeling [3].\n\nIf you find it difficult to cope, consider reaching out to the Care2Caregivers helpline or consulting with a doctor for additional support. \n\nYou may also want to look into local NJ resources or watch a related video for more tips.",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "thanks_for_sharing": true,
+        "mirrors_relation": true
+      },
+      "repeat": 1
+    },
+    {
+      "id": "peer-alone",
+      "kind": "Feeling alone",
+      "expect_emotion": null,
+      "text": "Does anyone else feel alone doing this? None of my friends understand.",
+      "plan": [
+        "peer"
+      ],
+      "safety": null,
+      "answer": "Thank you for sharing this. Many caregivers express feeling alone in their journey, especially when friends don\u2019t fully understand what they\u2019re going through. It can be really isolating. You're definitely not the only one who feels this way.\n\nConnecting with other caregivers can make a big difference. Consider looking for a local support group or even online communities where you can share your experiences and hear from others who are in similar situations. It can help to talk with people who truly get it.",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true
+      },
+      "repeat": 1
+    },
+    {
+      "id": "relation-mom",
+      "kind": "Relationship named",
+      "expect_emotion": false,
+      "relation": "mom",
+      "text": "My mom has trouble sleeping at night. Any tips?",
+      "plan": [
+        "education"
+      ],
+      "safety": null,
+      "answer": "Here are some tips that may help your mom get a better night's sleep:\n\n1. **Keep a Regular Sleep Routine**: Encourage her to go to bed and wake up at the same time every day. This helps regulate her internal sleep clock.\n\n2. **Stay Active During the Day**: Keeping her engaged in activities can help her sleep better at night. Simple tasks like taking walks or helping with chores can be beneficial.\n\n3. **Monitor Food and Fluid Intake**: Make sure she isn't going to bed too full or hungry. Limit fluids before bedtime to reduce nighttime trips to the bathroom, and avoid caffeine and alcohol.\n\n4. **Limit Naps**: If she needs to nap, try to keep it short\u2014no longer than 30 minutes\u2014and not too close to bedtime.\n\n5. **Create a Calm Environment**: Dim the lights as bedtime approaches, play soothing music, and keep the bedroom quiet and comfortable.\n\n6. **Reassure and Redirect**: If she wakes up during the night, be available to help her. Calmly guide her if she needs assistance, like finding the bathroom.\n\nIf these tips don't help, it may be a good idea to discuss her sleep issues with her doctor. They can provide additional guidance or prescribe medication if necessary [1].\n\nFor more information, you can check out resources from Care2Caregivers or contact their helpline.",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "no_unstated_emotion": true,
+        "starts_with_answer": true,
+        "mirrors_relation": true
+      },
+      "repeat": 1
+    },
+    {
+      "id": "relation-father",
+      "kind": "Relationship named",
+      "expect_emotion": false,
+      "relation": "father",
+      "text": "My father refuses to eat. What should I try?",
+      "plan": [
+        "education"
+      ],
+      "safety": null,
+      "answer": "If your father is refusing to eat, there are several strategies you can try to encourage him to eat more. \n\n1. **Be Flexible**: Sometimes, it helps to offer foods that he enjoys, even if they are not traditional meal items. For example, breakfast for dinner is perfectly fine. \n\n2. **Keep it Simple**: If he has difficulty choosing from a menu or meal options, consider choosing for him. Offer one course at a time to reduce confusion.\n\n3. **Adapt to His Needs**: If he is having trouble using utensils, try offering finger foods that are easier to manage. \n\n4. **Eat Together**: Sharing a meal can encourage him to eat. The social aspect of eating with someone else can be motivating.\n\n5. **Hydrate**: Encourage water intake throughout the day, as staying hydrated is important.\n\n6. **Consult a Doctor**: If his refusal to eat continues, it may be a good idea to talk to his doctor. They can provide guidance and check for any underlying issues that might be affecting his appetite.\n\nIf you need more support, consider reaching out to the Care2Caregivers helpline at 800.424.2494 for additional resources and assistance.",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "no_unstated_emotion": true,
+        "starts_with_answer": true,
+        "mirrors_relation": true
+      },
+      "repeat": 1
+    },
+    {
+      "id": "safety-missing",
+      "kind": "Safety: missing person",
+      "expect_emotion": null,
+      "relation": "wife",
+      "text": "My wife wandered off and I can't find her.",
+      "plan": [
+        "education"
+      ],
+      "safety": "missing_person",
+      "answer": "\ud83d\udea8 If the person you care for is missing, call **911** now \u2014 police can begin a search immediately, and time matters with dementia. Have a recent photo and description ready.\n\nIf your wife has wandered off and you cannot find her, it's important to act quickly. First, check any nearby areas where she might have gone, such as outside or to familiar places. If you still cannot find her, call 911 immediately to report her missing. They can help you search for her safely.\n\nIt's crucial to ensure her safety, especially if she has dementia, as she may not remember how to return home. Please take this situation seriously and seek help right away.",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "urgent_steps_first": true,
+        "mirrors_relation": true
+      },
+      "repeat": 1
+    },
+    {
+      "id": "resource-daycare",
+      "kind": "Resource request",
+      "expect_emotion": false,
+      "text": "Where can I find adult day care in Bergen County?",
+      "plan": [
+        "education"
+      ],
+      "safety": null,
+      "answer": "You can find adult day care services in Bergen County by contacting local resources or using the New Jersey Department of Human Services' programs. They can provide information about available adult day care options in your area. \n\nYou might also consider reaching out to Care2Caregivers for assistance. They offer resources and information for caregivers, and their staff can help connect you with the right services. You can call them at 800.424.2494.\n\nFor more specific options, you may want to check local listings or contact community centers in Bergen County. \n\nIf you need immediate assistance or have specific concerns, please reach out to your doctor or the Care2Caregivers helpline. \n\nFeel free to look at the local NJ resources below for more information.",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "no_unstated_emotion": true,
+        "starts_with_answer": true
+      },
+      "repeat": 2
+    },
+    {
+      "id": "resource-groups",
+      "kind": "Resource request",
+      "expect_emotion": false,
+      "text": "Are there support groups for dementia caregivers in New Jersey?",
+      "plan": [
+        "education"
+      ],
+      "safety": null,
+      "answer": "Yes, there are support groups for dementia caregivers in New Jersey. Care2Caregivers offers resources, information, and support specifically for those caring for someone with memory loss. Connecting with others who have similar experiences can be very helpful. \n\nYou can reach out to Care2Caregivers for more information on available support groups and other resources. Their helpline is 800.424.2494, and they can provide guidance tailored to your needs. \n\nIf you're interested, you might also want to look into local resources or visit their website for more details.",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "no_unstated_emotion": true,
+        "starts_with_answer": true
+      },
+      "repeat": 2
+    },
+    {
+      "id": "topic-agitation",
+      "kind": "Practical question on a hard topic",
+      "expect_emotion": false,
+      "text": "How do I handle agitation in the late afternoon?",
+      "plan": [
+        "education"
+      ],
+      "safety": null,
+      "answer": "To handle agitation in the late afternoon, it's helpful to first identify any triggers that might be causing the agitation. For example, did something happen earlier in the day that could have upset the person living with dementia? Try to minimize these triggers when possible [3].\n\nYou can also redirect their attention to a calming activity. This might include taking a walk together, helping with a simple task like folding laundry, or engaging in a light game. Activities that involve movement can help dissipate negative energy [1][2].\n\nCreating a soothing environment is also important. As bedtime approaches, dim the lights, play soft music, and avoid loud or scary television shows. This can help create a more peaceful atmosphere [2].\n\nIf the agitation persists, consider reaching out to the Care2Caregivers helpline for additional support. They can provide guidance tailored to your situation. \n\nIf you need immediate assistance or if the situation feels unsafe, please call 911 or consult a doctor. \n\nYou might also find local NJ resources helpful, and there are videos available that offer more tips on managing agitation.",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "no_unstated_emotion": true,
+        "starts_with_answer": true
+      },
+      "repeat": 2
+    },
+    {
+      "id": "topic-signs",
+      "kind": "Practical question on a hard topic",
+      "expect_emotion": false,
+      "text": "What are the signs that someone with dementia needs more help at home?",
+      "plan": [
+        "education"
+      ],
+      "safety": null,
+      "answer": "There are several signs that may indicate the person you care for needs more help at home:\n\n1. **Personal Hygiene**: If they are looking disheveled, have strong body odor, or their hair and clothes are unkempt, it may mean they are struggling with personal hygiene [2].\n\n2. **Living Conditions**: Look for signs such as unopened mail, unpaid bills, or a cluttered home. An abundance of expired food in the refrigerator or laundry piling up can also be red flags [2].\n\n3. **Safety Concerns**: If you notice unexplained dents in their car or they are forgetting things like leaving a pot on the stove, these could indicate safety issues [2].\n\n4. **Eating and Nutrition**: Weight gain or loss may suggest they are having trouble getting enough nutrition [2].\n\n5. **Behavior Changes**: If they are experiencing confusion, memory problems, or difficulty with everyday activities, they may need more assistance [3].\n\nIf you observe any of these signs, it might be time to consider additional support, such as hiring a caregiver or checking in more frequently. You can also contact the Care2Caregivers helpline for guidance.",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "no_unstated_emotion": true,
+        "starts_with_answer": true
+      },
+      "repeat": 2
+    },
+    {
+      "id": "feel-guilt",
+      "kind": "Feelings shared",
+      "expect_emotion": true,
+      "text": "I feel so guilty and exhausted. Some days I don't know if I'm doing any of this right.",
+      "plan": [
+        "emotion"
+      ],
+      "safety": null,
+      "answer": "Thank you for sharing this with me. It\u2019s completely understandable to feel guilty and exhausted; many caregivers experience these feelings. You're not alone in this.\n\nYour honesty in expressing these struggles shows strength, and it\u2019s clear you care deeply about the person you\u2019re looking after. Just reaching out to share how you feel is a big step.\n\nConsider taking a moment for yourself, even if it's just a short break to breathe or a quiet cup of tea. Small moments of self-care can help recharge your spirit. You might also find it helpful to talk to someone who understands, like the Care2Caregivers helpline at 1-800-424-2494.\n\nWhat\u2019s one small thing you could do for yourself today?",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "thanks_for_sharing": true
+      },
+      "repeat": 2
+    },
+    {
+      "id": "feel-overwhelmed",
+      "kind": "Feelings shared",
+      "expect_emotion": true,
+      "text": "I'm completely overwhelmed. I haven't slept properly in weeks.",
+      "plan": [
+        "emotion"
+      ],
+      "safety": null,
+      "answer": "Thank you for sharing this. Feeling overwhelmed and struggling with sleep is completely understandable, especially in your situation. You're certainly not alone in this experience.\n\nYour message shows your strength in reaching out for support, which is an important step. \n\nTo help with your sleep, consider establishing a calming bedtime routine, like reading or listening to soothing music before bed. Also, try limiting caffeine and alcohol, especially in the evening, as these can disrupt sleep. \n\nIf your sleeplessness continues, don\u2019t hesitate to talk to a medical provider about it. Remember, support is available through the Care2Caregivers helpline at 1-800-424-2494 if you need someone to talk to.\n\nWhat\u2019s one small thing you could do for yourself today to help ease that overwhelming feeling?",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "thanks_for_sharing": true
+      },
+      "repeat": 2
+    },
+    {
+      "id": "mixed-husband",
+      "kind": "Feelings + practical",
+      "expect_emotion": true,
+      "relation": "husband",
+      "text": "My husband keeps asking the same question over and over and I'm losing my patience. What can I do?",
+      "plan": [
+        "emotion",
+        "education"
+      ],
+      "safety": null,
+      "answer": "Thank you for sharing this. It\u2019s completely understandable to feel frustrated when your husband keeps asking the same question. Many caregivers experience this, and you are not alone in feeling this way. \n\nYour willingness to seek solutions shows your commitment to caring for him, even when it\u2019s challenging. One gentle approach you might try is to provide reassurance when he asks the question. You could respond with a calming phrase like, \"It's okay, I'm here with you,\" to help soothe him. \n\nAdditionally, consider incorporating some movement into your day together. A short walk or light activity could provide a distraction and help both of you feel more relaxed. \n\nIf you need someone to talk to, remember that support is available through the Care2Caregivers helpline at 1-800-424-2494. \n\nWhat\u2019s one small thing you could do for yourself right now to help you recharge?\n\nHere are some practical things that may help:\n\nIt's common for someone living with dementia to repeat questions. This can be frustrating, but there are ways to handle it. \n\nFirst, try to be patient. Memory issues can slow down their ability to process information, so allow time for them to respond. If they ask the same question, gently restate your answer using different words after a few minutes if needed [3].\n\nYou might also consider offering reassurance. Use comforting phrases like, \u201cYou are safe\u201d or \u201cI am with you\u201d to help them feel secure [2]. \n\nAdditionally, analyze the situation to see if there are triggers causing the repetition. For instance, is there a particular time of day when it happens more often? Understanding these patterns can help you manage the situation better [1].\n\nIf you continue to feel overwhelmed, it may be helpful to reach out to the Care2Caregivers helpline or consult with a doctor for more personalized strategies. \n\nLocal NJ resources and a short related video may also provide additional support.",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "thanks_for_sharing": true,
+        "mirrors_relation": true
+      },
+      "repeat": 2
+    },
+    {
+      "id": "peer-alone",
+      "kind": "Feeling alone",
+      "expect_emotion": null,
+      "text": "Does anyone else feel alone doing this? None of my friends understand.",
+      "plan": [
+        "peer"
+      ],
+      "safety": null,
+      "answer": "Thank you for sharing this. Many of us who've cared for someone feel that loneliness, especially when friends and family don\u2019t fully understand what we\u2019re going through. It can be isolating. You're definitely not alone in feeling this way. \n\nConsider reaching out to a support group for caregivers. It can be really helpful to connect with others who are in similar situations. Even sharing a bit of your experience can remind you that there are others who understand.",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true
+      },
+      "repeat": 2
+    },
+    {
+      "id": "relation-mom",
+      "kind": "Relationship named",
+      "expect_emotion": false,
+      "relation": "mom",
+      "text": "My mom has trouble sleeping at night. Any tips?",
+      "plan": [
+        "education"
+      ],
+      "safety": null,
+      "answer": "There are several strategies that may help your mom get a better night's sleep. Here are some tips:\n\n1. **Keep a Regular Sleep Routine**: Encourage her to go to bed and wake up at the same time each day. This helps regulate her internal sleep clock.\n\n2. **Stay Active During the Day**: Keeping her engaged in activities can help her feel more tired at night. Consider walks, light chores, or games that she enjoys.\n\n3. **Monitor Food and Fluid Intake**: Ensure she isn't going to bed too full or too hungry. Limit fluids before bedtime to reduce nighttime trips to the bathroom, and avoid caffeine and alcohol.\n\n4. **Limit Naps**: If she needs to nap, try to keep it to 30 minutes and not too close to bedtime, as longer naps can interfere with nighttime sleep.\n\n5. **Create a Calm Sleep Environment**: As bedtime approaches, dim the lights and play soothing music. Keep the bedroom quiet and dark, using a night light if necessary.\n\n6. **Reassure and Redirect**: If she wakes up during the night, be available to help her calmly find the bathroom or settle back to sleep.\n\nIf these strategies don't help, it may be a good idea to consult her doctor. They can check for any underlying issues or discuss medication options if needed.\n\nFor more information, you might want to check local resources or contact the Care2Caregivers helpline.",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "no_unstated_emotion": true,
+        "starts_with_answer": true,
+        "mirrors_relation": true
+      },
+      "repeat": 2
+    },
+    {
+      "id": "relation-father",
+      "kind": "Relationship named",
+      "expect_emotion": false,
+      "relation": "father",
+      "text": "My father refuses to eat. What should I try?",
+      "plan": [
+        "education"
+      ],
+      "safety": null,
+      "answer": "It can be challenging when the person you care for refuses to eat. Here are some tips that may help:\n\n1. **Be Flexible**: Accept that his eating habits may change. You can offer breakfast foods for dinner or try different meal times.\n\n2. **Keep it Simple**: If he has trouble choosing from a menu, it\u2019s okay for you to choose for him. Offer one course at a time to reduce confusion.\n\n3. **Offer Finger Foods**: If he is having difficulty using utensils, finger foods can be easier for him to manage.\n\n4. **Eat Together**: Sharing meals can encourage him to eat. The social aspect of eating is important.\n\n5. **Hydrate**: Make sure he is drinking enough fluids throughout the day.\n\nIf these strategies do not help, or if you notice any additional concerns, it\u2019s a good idea to consult with his doctor. You can also reach out to the Care2Caregivers helpline at 800.424.2494 for more support and resources.",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "no_unstated_emotion": true,
+        "starts_with_answer": true,
+        "mirrors_relation": false
+      },
+      "repeat": 2
+    },
+    {
+      "id": "safety-missing",
+      "kind": "Safety: missing person",
+      "expect_emotion": null,
+      "relation": "wife",
+      "text": "My wife wandered off and I can't find her.",
+      "plan": [
+        "emotion"
+      ],
+      "safety": "missing_person",
+      "answer": "\ud83d\udea8 If the person you care for is missing, call **911** now \u2014 police can begin a search immediately, and time matters with dementia. Have a recent photo and description ready.\n\nIt's important to act quickly in this situation. First, check any nearby places she might have gone, like the backyard or a favorite spot in the neighborhood. If you still can\u2019t find her, consider calling local authorities for assistance. \n\nMake sure to keep your phone close in case she tries to reach you. \n\nStay calm, and remember that you can reach out to the Care2Caregivers helpline at 1-800-424-2494 for support. They can provide guidance during this stressful time. ",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "urgent_steps_first": true,
+        "mirrors_relation": false
+      },
+      "repeat": 2
+    },
+    {
+      "id": "resource-daycare",
+      "kind": "Resource request",
+      "expect_emotion": false,
+      "text": "Where can I find adult day care in Bergen County?",
+      "plan": [
+        "education"
+      ],
+      "safety": null,
+      "answer": "You can find adult day care services in Bergen County by contacting local resources that specialize in caregiving and support for individuals with memory loss. The Care2Caregivers program can help connect you with information and resources in your area. \n\nYou might also consider reaching out to the New Jersey Department of Human Services or looking for local adult day care facilities through community centers or senior services organizations in Bergen County.\n\nFor more specific assistance, you can call the Care2Caregivers helpline at 800-424-2494. They can provide you with tailored information and support. \n\nFeel free to explore local NJ resources and related videos below for more information!",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "no_unstated_emotion": true,
+        "starts_with_answer": true
+      },
+      "repeat": 3
+    },
+    {
+      "id": "resource-groups",
+      "kind": "Resource request",
+      "expect_emotion": false,
+      "text": "Are there support groups for dementia caregivers in New Jersey?",
+      "plan": [
+        "education"
+      ],
+      "safety": null,
+      "answer": "Yes, there are support groups for dementia caregivers in New Jersey. Care2Caregivers offers resources, information, and support for caregivers. Connecting with others who have similar experiences can provide valuable support and helpful tips. \n\nFor more information, you can call the Care2Caregivers helpline at 800.424.2494 or visit their website for details on available support groups. \n\nIf you\u2019d like to explore local resources, please take a look at the information below.",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "no_unstated_emotion": true,
+        "starts_with_answer": true
+      },
+      "repeat": 3
+    },
+    {
+      "id": "topic-agitation",
+      "kind": "Practical question on a hard topic",
+      "expect_emotion": false,
+      "text": "How do I handle agitation in the late afternoon?",
+      "plan": [
+        "education"
+      ],
+      "safety": null,
+      "answer": "To handle agitation in the late afternoon, consider a few strategies that may help. First, it's important to put safety first. If the person living with dementia becomes upset, try to redirect their attention to another activity. Engaging in movement, like taking a walk together or helping with a simple task, can help dissipate negative energy [1].\n\nYou might also want to scan the environment for triggers that could be causing agitation, such as loud noises or too many people. If you notice anything that might be disturbing, try to remove those stimuli [1]. \n\nAnother helpful approach is to plan ahead. If you can predict when agitation might occur, create a structured routine with engaging activities to provide reassurance and distraction during that time [4]. \n\nLastly, ensure that their physical needs are met. Check if they are hungry, thirsty, or need to use the bathroom, as these factors can contribute to agitation [3].\n\nIf you need more support, please consider reaching out to the Care2Caregivers helpline at 800.424.2494. They can provide guidance tailored to your situation. \n\nYou may also find local NJ resources helpful, and there's a short video available for additional tips.",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "no_unstated_emotion": true,
+        "starts_with_answer": true
+      },
+      "repeat": 3
+    },
+    {
+      "id": "topic-signs",
+      "kind": "Practical question on a hard topic",
+      "expect_emotion": false,
+      "text": "What are the signs that someone with dementia needs more help at home?",
+      "plan": [
+        "education"
+      ],
+      "safety": null,
+      "answer": "There are several signs that the person living with dementia may need more help at home:\n\n1. **Personal Hygiene Issues**: If they are looking disheveled, not bathing regularly, or wearing mismatched or stained clothes, this may indicate they are having difficulty with personal hygiene [2].\n\n2. **Home Environment**: Look for signs like unopened mail, unpaid bills, or a refrigerator with expired or uneaten food. A cluttered home or piling laundry can also be red flags [2].\n\n3. **Safety Concerns**: If there are unexplained dents in their car, it may suggest they are misjudging their surroundings. Additionally, if they forget to turn off the stove or get lost when leaving home, they cannot be left alone safely [2].\n\n4. **Changes in Eating Habits**: Significant weight gain or loss may indicate they are having trouble with nutrition [2].\n\n5. **Cognitive Decline**: If they are forgetting recent events, having trouble preparing familiar meals, or showing confusion, these are signs that they may need more assistance [3].\n\nIf you notice any of these signs, it may be time to consider hiring help or checking in more often. You can also contact the Care2Caregivers helpline for further guidance at 800.424.2494.",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "no_unstated_emotion": true,
+        "starts_with_answer": true
+      },
+      "repeat": 3
+    },
+    {
+      "id": "feel-guilt",
+      "kind": "Feelings shared",
+      "expect_emotion": true,
+      "text": "I feel so guilty and exhausted. Some days I don't know if I'm doing any of this right.",
+      "plan": [
+        "emotion"
+      ],
+      "safety": null,
+      "answer": "Thank you for sharing this with me. It\u2019s completely understandable to feel guilty and exhausted, especially when you\u2019re doing so much. Many caregivers feel this way, and you\u2019re not alone in your struggles.\n\nYour message shows strength in reaching out and sharing your feelings, which is an important step. It\u2019s clear that you care deeply about the person you\u2019re supporting, and that\u2019s commendable.\n\nTo help with your exhaustion, consider taking a short break each day, even if it\u2019s just for a few minutes to breathe, stretch, or enjoy a quiet moment. You might also find it helpful to talk to someone you trust about your feelings; sometimes, just sharing can lighten the load.\n\nRemember, support is available if you need it. You can reach out to the Care2Caregivers helpline at 1-800-424-2494. \n\nWhat\u2019s one small thing you could do for yourself today?",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "thanks_for_sharing": true
+      },
+      "repeat": 3
+    },
+    {
+      "id": "feel-overwhelmed",
+      "kind": "Feelings shared",
+      "expect_emotion": true,
+      "text": "I'm completely overwhelmed. I haven't slept properly in weeks.",
+      "plan": [
+        "emotion"
+      ],
+      "safety": null,
+      "answer": "Thank you for sharing this with me. It\u2019s completely understandable to feel overwhelmed, especially when you haven\u2019t had proper sleep for so long. You\u2019re not alone in this; many caregivers experience similar challenges.\n\nReaching out shows your strength and determination to keep going, even when it\u2019s tough. It\u2019s important to take care of yourself during this time. \n\nOne gentle suggestion is to establish a calming bedtime routine. Try to wind down each night with a relaxing activity, like reading or listening to soothing music. Also, consider monitoring food and fluid intake for both you and the person you care for, as this can impact sleep.\n\nIf you need someone to talk to, remember that support is available. You can reach out to the Care2Caregivers helpline at 1-800-424-2494.\n\nWhat\u2019s one small thing you could do for yourself today to help ease this feeling?",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "thanks_for_sharing": true
+      },
+      "repeat": 3
+    },
+    {
+      "id": "mixed-husband",
+      "kind": "Feelings + practical",
+      "expect_emotion": true,
+      "relation": "husband",
+      "text": "My husband keeps asking the same question over and over and I'm losing my patience. What can I do?",
+      "plan": [
+        "emotion",
+        "education"
+      ],
+      "safety": null,
+      "answer": "Thank you for sharing this. It\u2019s completely understandable to feel frustrated when your husband keeps repeating questions. Many caregivers experience this, and you are not alone in feeling this way.\n\nYour willingness to seek help shows your strength and commitment to care, even when it's challenging. One approach you might try is to gently reassure him with simple, calming phrases like, \u201cYou are safe\u201d or \u201cI am with you.\u201d This could help him feel more secure and lessen the need to ask repeatedly.\n\nAlso, consider finding a distraction or an activity you can do together, like listening to music or going for a short walk. This might help shift his focus and ease some of your frustration.\n\nRemember, support is available through the Care2Caregivers helpline at 1-800-424-2494 if you need to talk. What\u2019s one small thing you could do for yourself right now?\n\nHere are some practical things that may help:\n\nIt's common for someone living with dementia to ask the same question repeatedly. This can be frustrating, but there are ways to manage it.\n\nFirst, try to respond patiently. Allow your husband time to process your answer. If he doesn't seem to understand or remember, restate your response using different words after a moment. It's important to give him a chance to articulate his thoughts, as memory issues can slow down his ability to communicate [3].\n\nYou might also consider offering reassurance. Phrases like \u201cYou are safe\u201d or \u201cI am with you\u201d can help him feel more secure and may reduce the frequency of his questions [2]. \n\nAdditionally, think about what might be triggering his need to ask the same question. Is there a particular time of day when it happens more? Understanding any patterns can help you address the underlying concerns [1].\n\nIf you're feeling overwhelmed, it's okay to take a break when you can. Remember that these behaviors are part of the illness, and it's important to care for yourself too. For more support, consider reaching out to the Care2Caregivers helpline or your doctor.\n\nLocal NJ resources and videos may also provide helpful insights.",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "thanks_for_sharing": true,
+        "mirrors_relation": true
+      },
+      "repeat": 3
+    },
+    {
+      "id": "peer-alone",
+      "kind": "Feeling alone",
+      "expect_emotion": null,
+      "text": "Does anyone else feel alone doing this? None of my friends understand.",
+      "plan": [
+        "peer"
+      ],
+      "safety": null,
+      "answer": "You're definitely not alone in feeling this way. Many caregivers experience isolation, especially when those around them can't fully grasp what they're going through. It's common to feel disconnected from friends and family during this journey. \n\nReaching out to others in similar situations can really help. Consider looking for a local support group or even an online community for caregivers. Connecting with others who share your experiences can remind you that you're not alone in this.",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true
+      },
+      "repeat": 3
+    },
+    {
+      "id": "relation-mom",
+      "kind": "Relationship named",
+      "expect_emotion": false,
+      "relation": "mom",
+      "text": "My mom has trouble sleeping at night. Any tips?",
+      "plan": [
+        "education"
+      ],
+      "safety": null,
+      "answer": "There are several strategies you can try to help your mom get a better night's sleep. \n\n1. **Keep a Regular Sleep Routine**: Encourage her to go to bed and wake up at the same time every day. This can help regulate her sleep cycle.\n\n2. **Monitor Food and Fluid Intake**: Make sure she isn\u2019t going to bed too full or hungry. Limit fluids before bedtime to avoid nighttime trips to the bathroom, and avoid caffeine and alcohol, as these can disrupt sleep.\n\n3. **Stay Active During the Day**: Keeping her engaged in activities can help. Consider walks, helping with chores, or doing puzzles. This can reduce apathy and promote better sleep at night.\n\n4. **Limit Naps**: If she needs to nap, keep it short\u2014no longer than 30 minutes\u2014and not too close to bedtime.\n\n5. **Create a Calm Environment**: Dim the lights as bedtime approaches and play soothing music. Keep the bedroom quiet and comfortable, using a night light if needed.\n\n6. **Reassure and Redirect**: If she wakes up at night, be available to help her. Calmly guide her to the bathroom if needed, and reassure her to help reduce anxiety.\n\nIf these tips don't help, it might be a good idea to discuss her sleep issues with her doctor. They can check for any underlying health problems and may suggest medications if necessary [1].\n\nFor more resources, you can reach out to the Care2Caregivers helpline or consult her doctor. \n\nFeel free to check out local NJ resources or related videos below for additional support.",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "no_unstated_emotion": true,
+        "starts_with_answer": true,
+        "mirrors_relation": true
+      },
+      "repeat": 3
+    },
+    {
+      "id": "relation-father",
+      "kind": "Relationship named",
+      "expect_emotion": false,
+      "relation": "father",
+      "text": "My father refuses to eat. What should I try?",
+      "plan": [
+        "education"
+      ],
+      "safety": null,
+      "answer": "If your father is refusing to eat, it\u2019s important to approach the situation with patience and flexibility. Here are some suggestions:\n\n1. **Simplify Choices**: Offer one course at a time to reduce confusion. If he has difficulty choosing from a menu, you can choose for him.\n\n2. **Make It Social**: Eating together can encourage him to eat. Share a meal with him to make it a more enjoyable experience.\n\n3. **Adapt Food Options**: If he is having trouble with utensils, consider offering finger foods that are easier to manage. \n\n4. **Hydrate**: Encourage water intake throughout the day, as staying hydrated is important.\n\n5. **Monitor Changes**: If his refusal to eat continues, it may be helpful to consult with his doctor. Changes in appetite can be common in dementia, and a healthcare professional can provide guidance tailored to his needs.\n\nIf you need more support, consider reaching out to the Care2Caregivers helpline at 800.424.2494. They can offer additional resources and assistance.",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "no_unstated_emotion": true,
+        "starts_with_answer": true,
+        "mirrors_relation": true
+      },
+      "repeat": 3
+    },
+    {
+      "id": "safety-missing",
+      "kind": "Safety: missing person",
+      "expect_emotion": null,
+      "relation": "wife",
+      "text": "My wife wandered off and I can't find her.",
+      "plan": [
+        "education"
+      ],
+      "safety": "missing_person",
+      "answer": "\ud83d\udea8 If the person you care for is missing, call **911** now \u2014 police can begin a search immediately, and time matters with dementia. Have a recent photo and description ready.\n\nIt's important to act quickly in this situation. First, check your home and yard thoroughly. Look in places she might go, like familiar spots or nearby parks. If you still can't find her, call 911 immediately to report her missing. \n\nIt's crucial to ensure her safety, especially if she has dementia. While waiting for help, you might also want to ask neighbors if they've seen her. \n\nPlease take care of yourself during this stressful time.",
+      "checks": {
+        "route_ok": true,
+        "no_sorry_opener": true,
+        "no_loved_one": true,
+        "urgent_steps_first": true,
+        "mirrors_relation": false
+      },
+      "repeat": 3
+    }
+  ]
+}

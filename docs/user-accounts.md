@@ -1,5 +1,9 @@
 # 用户账户 + 按用户历史 — 设计与实施记录（M9）
 
+> **2026-09-28 更新：** 账户及对话历史保留；旧情绪查询接口已统一返回 `410 Gone`，不再按账号或游客标识提供情绪记录。见 [升级第 1 步](upgrade-step-1.md)。
+
+> **2026-09-29 更新：** 新回答同时保存该条回答的引用来源，恢复历史后仍可点击正文编号。`messages.sources` 采用仅新增列的兼容迁移，旧回答没有来源映射时保留原文、不猜测链接。继续对话前校验该会话属于当前用户。见 [R02 / R10](guide-library-and-citations.md)。
+
 > 活文档 / 维护记录：先写计划，实施时逐条回填"改动记录"。
 > 关联：[DESIGN.md](../DESIGN.md)、[deployment.md](deployment.md)、[wellbeing-visualization.md](wellbeing-visualization.md)。
 
